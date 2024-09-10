@@ -24,7 +24,7 @@
 //                      *htimRD -> TIM handler da roda direita  //
 // Output parameters:	  none                                    //
 // *************************************************************//
-void vMotorInit(TIM_HandleTypeDef *htimRE, TIM_HandleTypeDef *htimRD);
+void vMotorInit(TIM_HandleTypeDef *htimMotor);
 
 // Method name:         vSetRodaEsquerdaDC                      //
 // Method description: 	Seta o duty cycle da roda esquerda      //
@@ -40,23 +40,5 @@ void vSetRodaEsquerdaDC(float fRodaEsquerdaDC);
 // Output parameters:   none                                    //
 // *************************************************************//
 void vSetRodaDireitaDC(float fRodaDireitaDC);
-
-// *************************************************************//
-// Method name:         vRodaEsquerdaHandler                    //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      esquerda                                //
-// Input parameters:	none                                    //
-// Output parameters:	none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaEsquerdaHandler(void);
-
-// *************************************************************//
-// Method name:         vRodaDireitaHandler                     //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      direita                                 //
-// Input parameters:	none                                    //
-// Output parameters:	none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaDireitaHandler(void);
 
 #endif  // HEATERANDCOOLER_H

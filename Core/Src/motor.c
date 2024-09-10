@@ -13,8 +13,7 @@
 
 #include "motor.h"
 
-TIM_HandleTypeDef *htimRodaEsquerda;
-TIM_HandleTypeDef *htimRodaDireita;
+TIM_HandleTypeDef *htimRodas;
 
 // *************************************************************//
 // Method name:         vMotorInit                              //
@@ -23,12 +22,11 @@ TIM_HandleTypeDef *htimRodaDireita;
 //                      *htimRD -> TIM handler da roda direita  //
 // Output parameters:   none                                    //
 // *************************************************************//
-void vMotorInit(TIM_HandleTypeDef *htimRE, TIM_HandleTypeDef *htimRD)
+void vMotorInit(TIM_HandleTypeDef *htimMotor)
 {
-  htimRodaEsquerda = htimRE;
-  htimRodaDireita = htimRD;
-  HAL_TIM_PWM_Start(htimRE, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(htimRE, TIM_CHANNEL_2);
+  htimRodas = htimMotor;
+  HAL_TIM_PWM_Start(htimMotor, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(htimMotor, TIM_CHANNEL_2);
 }
 
 // *************************************************************//
@@ -39,7 +37,7 @@ void vMotorInit(TIM_HandleTypeDef *htimRE, TIM_HandleTypeDef *htimRD)
 // *************************************************************//
 void vSetRodaEsquerdaDC(float fRodaEsquerdaDC)
 {
-  __HAL_TIM_SET_COMPARE(htimRodaEsquerda, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000);
+  __HAL_TIM_SET_COMPARE(htimRodas, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000);
 }
 
 // *************************************************************//
@@ -50,29 +48,5 @@ void vSetRodaEsquerdaDC(float fRodaEsquerdaDC)
 // *************************************************************//
 void vSetRodaDireitaDC(float fRodaDireitaDC)
 {
-  __HAL_TIM_SET_COMPARE(htimRodaDireita, TIM_CHANNEL_2, fRodaDireitaDC * 1000);
-}
-
-// *************************************************************//
-// Method name:         vRodaEsquerdaHandler                    //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      esquerda                                //
-// Input parameters:	  none                                    //
-// Output parameters:	  none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaEsquerdaHandler(void)
-{
-  return htimRodaEsquerda;
-}
-
-// *************************************************************//
-// Method name:         vRodaDireitaHandler                     //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      direita                                 //
-// Input parameters:	  none                                    //
-// Output parameters:	  none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaDireitaHandler(void)
-{
-  return htimRodaDireita;
+  __HAL_TIM_SET_COMPARE(htimRodas, TIM_CHANNEL_2, fRodaDireitaDC * 1000);
 }

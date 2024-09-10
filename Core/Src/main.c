@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "motor.h"
 
 /* USER CODE END Includes */
 
@@ -90,9 +91,10 @@ int main(void)
   MX_GPIO_Init();
   MX_LPUART1_UART_Init();
   MX_TIM1_Init();
+  MX_TIM16_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  vMotorInit(&htim1);
 
   /* USER CODE END 2 */
 
@@ -100,15 +102,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_GPIO_WritePin(EnMotorA_GPIO_Port, EnMotorA_Pin, 1);
-	  //IN1 = 1 e IN2 = 0 : TRAS
-	  //IN1 = 0 e IN2 = 1 : FRENTE
-	  //IN3 = 1 e IN4 = 0 : TRAS
-	  //IN3 = 0 e IN4 = 1 : FRENTE
+	  vSetRodaEsquerdaDC(1.0);
+	  vSetRodaDireitaDC(1.0);
+	  //IN1 = 1 e IN2 = 0 : TRAS MOTOR A
+	  //IN1 = 0 e IN2 = 1 : FRENTE MOTOR A
+	  //IN3 = 1 e IN4 = 0 : TRAS MOTOR B
+	  //IN3 = 0 e IN4 = 1 : FRENTE MOTOR B
 	  HAL_GPIO_WritePin(IN1_GPIO_Port, IN1_Pin, 0);
 	  HAL_GPIO_WritePin(IN2_GPIO_Port, IN2_Pin, 0);
+	  HAL_GPIO_WritePin(IN3_GPIO_Port, IN3_Pin, 0);
+	  HAL_GPIO_WritePin(IN4_GPIO_Port, IN4_Pin, 0);
 
-	  TIM1->CCR2 = 100;
 
     /* USER CODE END WHILE */
 
