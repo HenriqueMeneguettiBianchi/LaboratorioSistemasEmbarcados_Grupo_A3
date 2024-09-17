@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "usart.h"
 #include "tim.h"
 #include "gpio.h"
@@ -25,6 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "motor.h"
+#include <stdio.h>
+#include <string.h>
+#include "lcd_hd44780_i2c.h"
 
 /* USER CODE END Includes */
 
@@ -93,6 +97,8 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
+  MX_I2C2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
 

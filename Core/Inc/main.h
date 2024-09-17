@@ -66,6 +66,8 @@ void Error_Handler(void);
 #define LPUART1_RX_GPIO_Port GPIOA
 #define LedYellow_Pin GPIO_PIN_5
 #define LedYellow_GPIO_Port GPIOA
+#define LCD_I2C_SCL_Pin GPIO_PIN_4
+#define LCD_I2C_SCL_GPIO_Port GPIOC
 #define IN1_Pin GPIO_PIN_12
 #define IN1_GPIO_Port GPIOB
 #define IN4_Pin GPIO_PIN_10
