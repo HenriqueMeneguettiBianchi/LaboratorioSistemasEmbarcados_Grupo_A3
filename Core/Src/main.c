@@ -24,6 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
+#include "string.h"
 #include "motor.h"
 
 /* USER CODE END Includes */
@@ -46,6 +48,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+static char cBufer[50];
+static float fSpeed;
+static unsigned char cSpeedInt, cSpeedDec;
 
 /* USER CODE END PV */
 
@@ -93,8 +98,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  vMotorInit(&htim1);
+  vMotorInit(&htim1, &htim2, &htim16, &htim17);
+
+  sprintf(cBufer, "Hello!\r\n");
+  HAL_UART_Transmit_IT(&hlpuart1, (unsigned char*)cBufer, (uint16_t)strlen(cBufer));
 
   /* USER CODE END 2 */
 
@@ -102,8 +111,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  vSetRodaEsquerdaDC(1.0);
-	  vSetRodaDireitaDC(1.0);
+	  vSetRodaEsquerdaDC(0.8);
+	  vSetRodaDireitaDC(0.8);
 	  //IN1 = 1 e IN2 = 0 : TRAS MOTOR A
 	  //IN1 = 0 e IN2 = 1 : FRENTE MOTOR A
 	  //IN3 = 1 e IN4 = 0 : TRAS MOTOR B
@@ -112,6 +121,19 @@ int main(void)
 	  HAL_GPIO_WritePin(IN2_GPIO_Port, IN2_Pin, 0);
 	  HAL_GPIO_WritePin(IN3_GPIO_Port, IN3_Pin, 0);
 	  HAL_GPIO_WritePin(IN4_GPIO_Port, IN4_Pin, 0);
+
+	  fSpeed = fMotorGetSpeed();
+	  cSpeedInt = (unsigned char)fSpeed;
+	  cSpeedDec = (unsigned char)((fSpeed - cSpeedInt)*100);
+	  if(cSpeedDec < 10){
+		sprintf(cBufer, "%d.0%d cm/s\r\n", cSpeedInt, cSpeedDec);
+	  }
+	  else{
+		sprintf(cBufer, "%d.%d cm/s\r\n", cSpeedInt, cSpeedDec);
+	  }
+
+	  HAL_UART_Transmit_IT(&hlpuart1, (unsigned char*)cBufer, (uint16_t)strlen(cBufer));
+	  HAL_Delay(1000);
 
 
     /* USER CODE END WHILE */

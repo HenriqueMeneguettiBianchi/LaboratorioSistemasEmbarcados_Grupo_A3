@@ -1,3 +1,5 @@
-../Core/Src/motor.c:25:6:vMotorInit	16	static
-../Core/Src/motor.c:38:6:vSetRodaEsquerdaDC	16	static
-../Core/Src/motor.c:49:6:vSetRodaDireitaDC	16	static
+../Core/Src/motor.c:33:6:vMotorInit	24	static
+../Core/Src/motor.c:54:6:vSetRodaEsquerdaDC	16	static
+../Core/Src/motor.c:64:6:vSetRodaDireitaDC	16	static
+../Core/Src/motor.c:74:6:HAL_TIM_IC_CaptureCallback	24	static
+../Core/Src/motor.c:132:7:fMotorGetSpeed	16	static
