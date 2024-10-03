@@ -1,0 +1,3 @@
+../Core/Src/encoder.c:19:6:inicializarEncoders	1
+../Core/Src/encoder.c:24:6:processarCaptura	3
+../Core/Src/encoder.c:41:6:HAL_TIM_IC_CaptureCallback	3

@@ -1,0 +1,2 @@
+../Core/Src/led.c:26:6:vLedWrite	16	static
+../Core/Src/led.c:49:6:vLedToggleLed	16	static

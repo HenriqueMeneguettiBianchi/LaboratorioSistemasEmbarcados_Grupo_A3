@@ -1,0 +1,10 @@
+../Core/Src/lcd.c:39:6:vLcdInitLcd	24	static
+../Core/Src/lcd.c:75:6:vLcdWriteData	16	static
+../Core/Src/lcd.c:88:6:vLcdSendCommand	16	static
+../Core/Src/lcd.c:102:6:vLcdSetCursor	24	static
+../Core/Src/lcd.c:127:6:vLcdWriteString	16	static
+../Core/Src/lcd.c:142:6:vLcdDummyText	8	static
+../Core/Src/lcd.c:158:6:vLcdDisplayNumber	72	static
+../Core/Src/lcd.c:204:6:vLcdBacklightOn	8	static
+../Core/Src/lcd.c:221:6:vLcdBacklightOff	8	static
+../Core/Src/lcd.c:240:13:vLcdWrite2Lcd	24	static

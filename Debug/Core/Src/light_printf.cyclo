@@ -1,0 +1,7 @@
+../Core/Src/light_printf.c:14:13:printchar_	2
+../Core/Src/light_printf.c:30:12:prints_	9
+../Core/Src/light_printf.c:63:12:printi_	10
+../Core/Src/light_printf.c:106:12:print_	17
+../Core/Src/light_printf.c:170:5:printf_	1
+../Core/Src/light_printf.c:178:5:sprintf_	1
+../Core/Src/light_printf.c:187:5:snprintf_	1
