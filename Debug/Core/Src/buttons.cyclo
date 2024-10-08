@@ -1,0 +1,2 @@
+../Core/Src/buttons.c:20:6:initializeButtons	1
+../Core/Src/buttons.c:38:5:getButtonStatus	6

@@ -38,6 +38,7 @@
         * Output
         * EVENT_OUT
         * EXTI
+     PA15   ------> S_TIM8_CH1
 */
 void MX_GPIO_Init(void)
 {
@@ -51,30 +52,46 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, Motor_Dir_IN1_Pin|Motor_Esq_IN3_Pin|LED_B_PWM_Pin|Motot_Dir_IN2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, Motor_Dir_IN1_Pin|Motor_Esq_IN3_Pin|LedBlue_Pin|Motot_Dir_IN2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, Motor_Esq_IN4_Pin|LED_R_PWM_Pin|LED_G_PWM_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Motor_Esq_IN4_Pin|LedRed_Pin|LedGreen_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  /*Configure GPIO pins : PC13 PCPin PCPin PCPin
+                           PCPin */
+  GPIO_InitStruct.Pin = GPIO_PIN_13|BT_Enter_Pin|BT_Baixo_Pin|BT_Esq_Pin
+                          |BT_Dir_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = Motor_Dir_IN1_Pin|Motor_Esq_IN3_Pin|LED_B_PWM_Pin|Motot_Dir_IN2_Pin;
+  GPIO_InitStruct.Pin = Motor_Dir_IN1_Pin|Motor_Esq_IN3_Pin|LedBlue_Pin|Motot_Dir_IN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PAPin PAPin PAPin */
-  GPIO_InitStruct.Pin = Motor_Esq_IN4_Pin|LED_R_PWM_Pin|LED_G_PWM_Pin;
+  GPIO_InitStruct.Pin = Motor_Esq_IN4_Pin|LedRed_Pin|LedGreen_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = Buzzer_PWM_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF2_TIM8;
+  HAL_GPIO_Init(Buzzer_PWM_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = BT_Cima_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(BT_Cima_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);

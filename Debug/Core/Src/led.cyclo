@@ -1,0 +1,5 @@
+../Core/Src/led.c:21:6:initializeLed	1
+../Core/Src/led.c:33:6:setLedState	3
+../Core/Src/led.c:51:6:activateLed	5
+../Core/Src/led.c:74:6:deactivateLed	5
+../Core/Src/led.c:97:6:toggleLedState	8
