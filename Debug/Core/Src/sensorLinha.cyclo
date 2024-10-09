@@ -4,4 +4,4 @@
 ../Core/Src/sensorLinha.c:69:6:vLineSensor4Init	1
 ../Core/Src/sensorLinha.c:76:6:vLineSensor5Init	1
 ../Core/Src/sensorLinha.c:83:7:fLineSensorCalculatePosition	5
-../Core/Src/sensorLinha.c:114:6:vLineSensorPIDControl	17
+../Core/Src/sensorLinha.c:114:6:vLineSensorPIDControl	19

@@ -1,3 +1,22 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
@@ -7,22 +26,41 @@
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
-#include "led.h"
-#include "motor.h"
-#include "lcd.h"
-#include <light_printf.h>
-#include <stdio.h>
-#include "sensorLinha.h"
-#include "encoder.h"
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
-extern float velocidadeRodaDireita;
-extern float velocidadeRodaEsquerda;
+/* USER CODE BEGIN PM */
 
-extern float max_duty_cycle;
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
@@ -30,52 +68,62 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-    /* MCU Configuration--------------------------------------------------------*/
+  /* USER CODE BEGIN 1 */
 
-    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init();
+  /* USER CODE END 1 */
 
-//    /* Configure the system clock */
-//    SystemClock_Config();
+  /* MCU Configuration--------------------------------------------------------*/
 
-    /* Initialize all configured peripherals */
-    MX_GPIO_Init();
-    MX_DMA_Init();
-    MX_LPUART1_UART_Init();
-    MX_TIM1_Init();
-    MX_I2C2_Init();
-    MX_ADC3_Init();
-    MX_ADC1_Init();
-    MX_ADC2_Init();
-    MX_ADC4_Init();
-    MX_ADC5_Init();
-    MX_TIM16_Init();
-    MX_TIM17_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-    /* Initialize encoders and sensors */
-    inicializarEncoders(&htim16, &htim17);
-    vMotorInit(&htim1);
+  /* USER CODE BEGIN Init */
 
-    vLineSensor1Init(&hadc1);
-    vLineSensor2Init(&hadc2);
-    vLineSensor3Init(&hadc3);
-    vLineSensor4Init(&hadc4);
-    vLineSensor5Init(&hadc5);
+  /* USER CODE END Init */
 
-    /* Infinite loop */
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_LPUART1_UART_Init();
+  MX_TIM1_Init();
+  MX_I2C2_Init();
+  MX_ADC3_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+  MX_ADC4_Init();
+  MX_ADC5_Init();
+  MX_TIM16_Init();
+  MX_TIM17_Init();
+  MX_TIM6_Init();
+  MX_TIM7_Init();
+  /* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
     while (1)
     {
         // Controla o PID para ajustar os motores
         vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
-
+        position2=fLineSensorCalculatePosition();
         // Adiciona um pequeno atraso se necessário
         HAL_Delay(10);
 
-      /* USER CODE END WHILE */
-    }
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
 }
+
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -156,4 +204,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

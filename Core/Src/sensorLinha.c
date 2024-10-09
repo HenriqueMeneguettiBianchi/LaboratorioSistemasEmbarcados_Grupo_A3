@@ -26,7 +26,7 @@ uint32_t lineSensor5Value;
 
 // Variáveis do controlador PID
 float Kp = 1.2f;
-float Ki = 0.1f;
+float Ki = 0.0f;
 float Kd = 0.1f;
 
 float error = 0.0f;
@@ -42,7 +42,7 @@ uint32_t previous_time = 0;
 
 // Velocidade base dos motores
 float base_speed = 0.15f; // Valor entre 0.0f e 1.0f
-float max_duty_cycle = 0.15f; // Limite máximo do duty cycle
+float max_duty_cycle = 0.2f; // Limite máximo do duty cycle
 
 // Função para inicializar o sensor 1
 void vLineSensor1Init(ADC_HandleTypeDef *hadc1) {
@@ -96,7 +96,7 @@ float fLineSensorCalculatePosition(void) {
     };
 
     for (int i = 0; i < 5; i++) {
-        if (sensorValues[i] >= 300 && sensorValues[i] <= 500) {
+        if (sensorValues[i] >= 300 && sensorValues[i] <= 600) {
             float weight = 1.0f / (sensorValues[i] - 300 + 1);
             totalWeightedPosition += pesos[i] * weight;
             totalWeight += weight;
@@ -150,23 +150,36 @@ void vLineSensorPIDControl(float left_encoder_speed, float right_encoder_speed) 
     float right_speed = right_encoder_speed;
 
     // Ajuste de velocidade para os sensores
-    if (lineSensor4Value >= 380 && lineSensor4Value <= 550) {
-        left_speed += left_speed * 0.05f; // Incremento de 5% na roda esquerda
-        right_speed -= right_speed * 0.05f; // Decremento de 5% na roda direita
+    if (position >= 1 && position < 2 ) {
+        left_speed += control_output;//left_speed * 0.65f; // Incremento de 5% na roda esquerda
+        right_speed -= control_output;//right_speed * 0.65f; // Decremento de 5% na roda direita
     }
-    if (lineSensor5Value >= 380 && lineSensor5Value <= 550) {
-        left_speed += left_speed * 0.15f; // Incremento de 10% na roda esquerda
-        right_speed -= right_speed * 0.15f; // Decremento de 10% na roda direita
+    if (position == 2) {
+        left_speed += control_output;//left_speed * 0.65f; // Incremento de 10% na roda esquerda
+        right_speed -= control_output;//right_speed * 0.65f; // Decremento de 10% na roda direita
     }
-    if (lineSensor2Value >= 380 && lineSensor2Value <= 500) {
-        right_speed += right_speed * 0.05f; // Incremento de 5% na roda direita
-        left_speed -= left_speed * 0.05f; // Decremento de 5% na roda esquerda
-    }
-    if (lineSensor1Value >= 380 && lineSensor1Value <= 500) {
-        right_speed += right_speed * 0.15f; // Incremento de 10% na roda direita
-        left_speed -= left_speed * 0.15f; // Decremento de 10% na roda esquerda
+    if (position > 0 && position < 1) {
+        left_speed += control_output;//left_speed * 0.65f; // Incremento de 10% na roda esquerda
+        right_speed -= control_output;//right_speed * 0.65f; // Decremento de 10% na roda direita
     }
 
+    if (position >-1 && position < 0) {
+        left_speed -= control_output;//left_speed * 0.65f; // Incremento de 10% na roda esquerda
+        right_speed += control_output;//right_speed * 0.65f; // Decremento de 10% na roda direita
+    }
+    if (position <= -1 && position >-2) {
+        left_speed -= control_output;//left_speed * 0.65f; // Incremento de 10% na roda esquerda
+        right_speed += control_output;//right_speed * 0.65f; // Decremento de 10% na roda direita
+    }
+
+    if (position == -2) {
+        right_speed += control_output;//right_speed * 0.35f; // Incremento de 10% na roda direita
+        left_speed -= control_output;//left_speed * 0.35f; // Decremento de 10% na roda esquerda
+    }
+    if (position == 0) {
+        right_speed = right_speed; // mantem
+        left_speed = left_speed; //
+    }
     // Garante que as velocidades estão entre 0 e max_duty_cycle
     if (left_speed > max_duty_cycle) left_speed = max_duty_cycle;
     if (left_speed < 0.0f) left_speed = 0.0f;
