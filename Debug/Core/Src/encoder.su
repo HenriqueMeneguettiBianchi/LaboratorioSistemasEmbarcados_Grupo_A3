@@ -1,0 +1,4 @@
+../Core/Src/encoder.c:24:6:inicializarEncoders	16	static
+../Core/Src/encoder.c:29:6:processarCaptura	32	static
+../Core/Src/encoder.c:46:6:processarCaptura2	32	static
+../Core/Src/encoder.c:64:6:HAL_TIM_IC_CaptureCallback	16	static

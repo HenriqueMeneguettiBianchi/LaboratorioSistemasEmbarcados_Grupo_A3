@@ -1,0 +1,2 @@
+../Core/Src/motor.c:26:6:vMotorInit	1
+../Core/Src/motor.c:36:6:vSetRodasDC	1

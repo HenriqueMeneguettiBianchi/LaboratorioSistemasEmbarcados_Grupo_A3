@@ -1,0 +1,4 @@
+../Core/Src/encoder.c:24:6:inicializarEncoders	1
+../Core/Src/encoder.c:29:6:processarCaptura	2
+../Core/Src/encoder.c:46:6:processarCaptura2	2
+../Core/Src/encoder.c:64:6:HAL_TIM_IC_CaptureCallback	3
