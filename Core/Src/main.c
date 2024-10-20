@@ -36,8 +36,10 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 float vMotorA, vMotorB;
-float dutyCycleE=0;
-float dutyCycleD=0;
+//float dutyCycleE= base_speed;
+//float dutyCycleD= base_speed;
+//extern float velocidadeRodaEsquerda = 0;
+//extern float velocidadeRodaDireita = 0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -107,7 +109,7 @@ int main(void)
   MX_TIM16_Init();
   MX_TIM17_Init();
   MX_TIM6_Init();
-  MX_TIM7_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -116,6 +118,7 @@ int main(void)
   vLineSensor3Init(&hadc3);
   vLineSensor4Init(&hadc4);
   vLineSensor5Init(&hadc5);
+  HAL_TIM_Base_Start_IT(&htim15);
 
   /* USER CODE END 2 */
 
@@ -126,10 +129,10 @@ int main(void)
     {
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
-    	vSetRodasDC(dutyCycleD,dutyCycleE);
-    	vLineSensorPIDControl();
+    	//vSetRodasDC(dutyCycleD,dutyCycleE);
+    	 //vLineSensorPIDControl();
         // Adiciona um pequeno atraso se necessário
-        HAL_Delay(10);
+        //HAL_Delay(10);
 
     /* USER CODE END WHILE */
 
@@ -185,7 +188,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
+	// Chamada a cada 10 ms
+	if (htim == &htim15){
+		vLineSensorPIDControl();
+	}
+}
 /* USER CODE END 4 */
 
 /**

@@ -11,7 +11,7 @@
 #define FATOR_MULTIPLICACAO_VELOCIDADE 20.4f // Fator para conversão de velocidade
 
 // Funções para inicializar os encoders
-inicializarEncoders(TIM_HandleTypeDef *timer16, TIM_HandleTypeDef *timer17);
+void inicializarEncoders(TIM_HandleTypeDef *timer16, TIM_HandleTypeDef *timer17);
 
 // Callback chamado quando uma captura de entrada é realizada
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
