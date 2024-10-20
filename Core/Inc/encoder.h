@@ -21,4 +21,7 @@ void processarCaptura(TIM_HandleTypeDef *htim, float *frequencia, float *velocid
 
 void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *velocidade);
 
+float fGetVelocidadeRodaEsquerda(void);
+float fGetVelocidadeRodaDireita(void);
+
 #endif // ENCODER_H

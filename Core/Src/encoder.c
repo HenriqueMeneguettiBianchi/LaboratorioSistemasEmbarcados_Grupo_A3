@@ -62,10 +62,22 @@ void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *veloci
 
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-    if (htim == &htim16) {
+    if (htim == &htim16)
+    {
         processarCaptura(htim, &frequenciaRodaEsquerda, &velocidadeRodaEsquerda);
-    } else if (htim == &htim17) {
-        processarCaptura2(htim, &frequenciaRodaDireita, &velocidadeRodaDireita);
-
     }
+    if (htim == &htim17)
+    {
+        processarCaptura2(htim, &frequenciaRodaDireita, &velocidadeRodaDireita);
+    }
+}
+
+float fGetVelocidadeRodaEsquerda(void)
+{
+    return velocidadeRodaEsquerda;
+}
+
+float fGetVelocidadeRodaDireita(void)
+{
+    return velocidadeRodaDireita;
 }

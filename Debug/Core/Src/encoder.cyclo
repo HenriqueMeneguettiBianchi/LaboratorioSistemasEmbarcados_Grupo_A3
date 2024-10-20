@@ -2,3 +2,5 @@
 ../Core/Src/encoder.c:29:6:processarCaptura	2
 ../Core/Src/encoder.c:46:6:processarCaptura2	2
 ../Core/Src/encoder.c:64:6:HAL_TIM_IC_CaptureCallback	3
+../Core/Src/encoder.c:75:7:fGetVelocidadeRodaEsquerda	1
+../Core/Src/encoder.c:80:7:fGetVelocidadeRodaDireita	1

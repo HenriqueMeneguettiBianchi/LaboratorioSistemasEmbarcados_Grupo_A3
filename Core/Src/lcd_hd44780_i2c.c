@@ -34,7 +34,9 @@
 
 #include "stdlib.h"
 #include "string.h"
+#include <stdio.h>
 #include "lcd_hd44780_i2c.h"
+#include "encoder.h"
 
 uint8_t lcdCommandBuffer[6] = {0x00};
 
@@ -393,3 +395,49 @@ char lcdChecki2c()
 	else
 		return 0;
 }
+
+// *************************************************************//
+// Method name:         vPrintMotorSpeed                        //
+// Method description:  Imprime as velocidades das rodas no LCD //
+// Input parameters:    fVelocidadeRodaEsquerda,                //
+//                      float fVelocidadeROdaDireita            //
+// Output parameters:   none                                    //
+// *************************************************************//
+void vPrintMotorSpeed(void){
+    float fVelocidadeRodaEsquerda = fGetVelocidadeRodaEsquerda();
+    float fVelocidadeRodaDireita = fGetVelocidadeRodaDireita();
+
+    unsigned char ucLCD0Msg[17], ucLCD1Msg[17];
+    int iVEInteiro, iVDInteiro;
+    int iVEdec, iVDdec;
+
+    iVEInteiro = (int)fVelocidadeRodaEsquerda;
+    iVDInteiro = (int)fVelocidadeRodaDireita;
+    iVEdec = 100*(fVelocidadeRodaEsquerda - iVEInteiro);
+    iVDdec = 100*(fVelocidadeRodaDireita - iVDInteiro);
+
+    // Display Test
+    sprintf((char *)ucLCD0Msg, "Speed L: %d,%d", iVEInteiro, iVEdec);
+    // Set cursor at zero position of line 0
+    lcdSetCursorPosition(0, 0);
+    // Print text at cursor position
+    lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));
+
+    sprintf((char *)ucLCD1Msg, "Speed R: %d,%d", iVDInteiro, iVDdec);
+    // Set cursor at zero position of line 0
+    lcdSetCursorPosition(0, 1);
+    // Print text at cursor position
+    lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
+}
+
+// *************************************************************//
+// Method name:         HAL_TIM_PeriodElapsedCallback           //
+// Method description:  Esse método realiza as funções internas //
+//                      quando a interrupção for chamada        //
+// Input parameters:    none                                    //
+// Output parameters:	none                                    //
+// *************************************************************//
+// __weak void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim)
+// {
+//   // Função movida para main
+// }

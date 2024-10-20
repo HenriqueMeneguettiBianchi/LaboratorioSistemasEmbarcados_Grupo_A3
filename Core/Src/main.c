@@ -27,9 +27,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 #include "sensorLinha.h"
 #include "motor.h"
 #include "encoder.h"
+#include "lcd_hd44780_i2c.h"
 
 /* USER CODE END Includes */
 
@@ -66,7 +69,10 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void vPrintUART(unsigned char *ucBuffer)
+{
+  HAL_UART_Transmit(&hlpuart1, ucBuffer, strlen(ucBuffer), 100);
+}
 /* USER CODE END 0 */
 
 /**
@@ -75,8 +81,9 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
 
+  /* USER CODE BEGIN 1 */
+  unsigned char ucLCD0Msg[17], ucLCD1Msg[17];
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -110,6 +117,7 @@ int main(void)
   MX_TIM17_Init();
   MX_TIM6_Init();
   MX_TIM15_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -118,7 +126,22 @@ int main(void)
   vLineSensor3Init(&hadc3);
   vLineSensor4Init(&hadc4);
   vLineSensor5Init(&hadc5);
-  HAL_TIM_Base_Start_IT(&htim15);
+
+  // Initialize the LCD
+  lcdInit(&hi2c2, (uint8_t)0x27, (uint8_t)2, (uint8_t)16);
+
+  // // Display Test
+  // sprintf((char *)ucLCD0Msg, "O display funfa!");
+  // // Set cursor at zero position of line 0
+  // lcdSetCursorPosition(0, 0);
+  // // Print text at cursor position
+  // lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));
+
+  // sprintf((char *)ucLCD1Msg, "TESTE LINHA 2");
+  // // Set cursor at zero position of line 0
+  // lcdSetCursorPosition(0, 1);
+  // // Print text at cursor position
+  // lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
 
   /* USER CODE END 2 */
 
@@ -193,6 +216,11 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	if (htim == &htim15){
 		vLineSensorPIDControl();
 	}
+  // Chamada a cada 500 ms
+  if (htim == &htim8){
+    vPrintUART("Teste!\n");
+    vPrintMotorSpeed();
+  }
 }
 /* USER CODE END 4 */
 

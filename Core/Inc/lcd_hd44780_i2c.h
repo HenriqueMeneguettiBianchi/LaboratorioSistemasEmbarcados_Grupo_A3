@@ -134,6 +134,24 @@ char lcdPrintChar(uint8_t data);
 char lcdLoadCustomChar(uint8_t cell, uint8_t * charMap);
 char lcdChecki2c();
 
+// *************************************************************//
+// Method name:         vPrintMotorSpeed                        //
+// Method description:  Imprime as velocidades das rodas no LCD //
+// Input parameters:    fVelocidadeRodaEsquerda,                //
+//                      float fVelocidadeROdaDireita            //
+// Output parameters:   none                                    //
+// *************************************************************//
+void vPrintMotorSpeed(void);
+
+// *************************************************************//
+// Method name:         HAL_TIM_PeriodElapsedCallback           //
+// Method description:  Esse método realiza as funções internas //
+//                      quando a interrupção for chamada        //
+// Input parameters:    none                                    //
+// Output parameters:   none                                    //
+// *************************************************************//
+// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
+
 /* C++ detection */
 #ifdef __cplusplus
 }

@@ -1,0 +1,10 @@
+../Core/Src/lcd_hd44780_i2c.c:58:6:lcdInit	10
+../Core/Src/lcd_hd44780_i2c.c:140:6:lcdCommand	22
+../Core/Src/lcd_hd44780_i2c.c:260:6:lcdBacklight	4
+../Core/Src/lcd_hd44780_i2c.c:284:6:lcdSetCursorPosition	2
+../Core/Src/lcd_hd44780_i2c.c:303:6:lcdPrintStr	2
+../Core/Src/lcd_hd44780_i2c.c:318:6:lcdPrintChar	1
+../Core/Src/lcd_hd44780_i2c.c:334:6:lcdLoadCustomChar	3
+../Core/Src/lcd_hd44780_i2c.c:362:13:lcdWriteByte	4
+../Core/Src/lcd_hd44780_i2c.c:390:6:lcdChecki2c	2
+../Core/Src/lcd_hd44780_i2c.c:406:6:vPrintMotorSpeed	1
