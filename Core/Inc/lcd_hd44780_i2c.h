@@ -141,7 +141,7 @@ char lcdChecki2c();
 //                      float fVelocidadeROdaDireita            //
 // Output parameters:   none                                    //
 // *************************************************************//
-void vPrintMotorSpeed(void);
+void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeROdaDireita);
 
 // *************************************************************//
 // Method name:         HAL_TIM_PeriodElapsedCallback           //

@@ -117,7 +117,7 @@ int main(void)
   MX_TIM17_Init();
   MX_TIM6_Init();
   MX_TIM15_Init();
-  MX_TIM8_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -129,6 +129,7 @@ int main(void)
 
   // Initialize the LCD
   lcdInit(&hi2c2, (uint8_t)0x27, (uint8_t)2, (uint8_t)16);
+  vPrintUART("TESTADO\n");
 
   // // Display Test
   // sprintf((char *)ucLCD0Msg, "O display funfa!");
@@ -143,6 +144,7 @@ int main(void)
   // // Print text at cursor position
   // lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
 
+  vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -215,11 +217,11 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	// Chamada a cada 10 ms
 	if (htim == &htim15){
 		vLineSensorPIDControl();
+    vPrintUART("Teste!\n");
 	}
   // Chamada a cada 500 ms
-  if (htim == &htim8){
-    vPrintUART("Teste!\n");
-    vPrintMotorSpeed();
+  if (htim == &htim7){
+    // vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
   }
 }
 /* USER CODE END 4 */

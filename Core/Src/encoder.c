@@ -1,6 +1,7 @@
 #include "main.h"
 #include "tim.h"
 
+
 #define CONTADOR_MAX 50000
 #define FATOR_MULTIPLICACAO_VELOCIDADE 20.41f // 2*3,14*3,25 --> 3,25 Raio do encoder medido em cm
 #define FREQUENCIA_CLOCK   170000000
@@ -70,6 +71,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
     {
         processarCaptura2(htim, &frequenciaRodaDireita, &velocidadeRodaDireita);
     }
+
 }
 
 float fGetVelocidadeRodaEsquerda(void)

@@ -34,9 +34,7 @@
 
 #include "stdlib.h"
 #include "string.h"
-#include <stdio.h>
 #include "lcd_hd44780_i2c.h"
-#include "encoder.h"
 
 uint8_t lcdCommandBuffer[6] = {0x00};
 
@@ -403,9 +401,7 @@ char lcdChecki2c()
 //                      float fVelocidadeROdaDireita            //
 // Output parameters:   none                                    //
 // *************************************************************//
-void vPrintMotorSpeed(void){
-    float fVelocidadeRodaEsquerda = fGetVelocidadeRodaEsquerda();
-    float fVelocidadeRodaDireita = fGetVelocidadeRodaDireita();
+void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeRodaDireita){
 
     unsigned char ucLCD0Msg[17], ucLCD1Msg[17];
     int iVEInteiro, iVDInteiro;
