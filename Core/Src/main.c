@@ -118,6 +118,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM15_Init();
   MX_TIM7_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -213,17 +214,30 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
-	// Chamada a cada 10 ms
-	if (htim == &htim15){
-		vLineSensorPIDControl();
-    vPrintUART("Teste!\n");
-	}
-  // Chamada a cada 500 ms
-  if (htim == &htim7){
-    // vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
-  }
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+    // PD2 -> Sensor de colisão
+    if (GPIO_Pin == GPIO_PIN_2) {
+        // Aciona o buzzer
+        HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+        
+        // Desliga o buzzer após 1 segundo
+        HAL_Delay(1000);
+        HAL_TIM_PWM_Stop(&htim8, TIM_CHANNEL_1);
+    }
 }
+
+// void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
+// 	// Chamada a cada 10 ms
+// 	if (htim == &htim15){
+// 		vLineSensorPIDControl();
+//     vPrintUART("Teste!\n");
+// 	}
+//   // Chamada a cada 500 ms
+//   if (htim == &htim7){
+//     // vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
+//   }
+// }
 /* USER CODE END 4 */
 
 /**
