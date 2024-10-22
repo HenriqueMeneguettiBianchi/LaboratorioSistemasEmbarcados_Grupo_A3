@@ -27,8 +27,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdio.h>
-#include <string.h>
 #include "sensorLinha.h"
 #include "motor.h"
 #include "encoder.h"
@@ -41,13 +39,13 @@
 float vMotorA, vMotorB;
 //float dutyCycleE= base_speed;
 //float dutyCycleD= base_speed;
-//extern float velocidadeRodaEsquerda = 0;
-//extern float velocidadeRodaDireita = 0;
+extern float velocidadeRodaEsquerda;
+extern float velocidadeRodaDireita;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,10 +67,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void vPrintUART(unsigned char *ucBuffer)
-{
-  HAL_UART_Transmit(&hlpuart1, ucBuffer, strlen(ucBuffer), 100);
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -81,9 +76,8 @@ void vPrintUART(unsigned char *ucBuffer)
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
-  unsigned char ucLCD0Msg[17], ucLCD1Msg[17];
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -117,7 +111,7 @@ int main(void)
   MX_TIM17_Init();
   MX_TIM6_Init();
   MX_TIM15_Init();
-  MX_TIM7_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -126,32 +120,17 @@ int main(void)
   vLineSensor3Init(&hadc3);
   vLineSensor4Init(&hadc4);
   vLineSensor5Init(&hadc5);
-
-  // Initialize the LCD
-  lcdInit(&hi2c2, (uint8_t)0x27, (uint8_t)2, (uint8_t)16);
-  vPrintUART("TESTADO\n");
-
-  // // Display Test
-  // sprintf((char *)ucLCD0Msg, "O display funfa!");
-  // // Set cursor at zero position of line 0
-  // lcdSetCursorPosition(0, 0);
-  // // Print text at cursor position
-  // lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));
-
-  // sprintf((char *)ucLCD1Msg, "TESTE LINHA 2");
-  // // Set cursor at zero position of line 0
-  // lcdSetCursorPosition(0, 1);
-  // // Print text at cursor position
-  // lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
-
-  vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
+  lcdInit(&hi2c2,(uint8_t)0x27,(uint8_t)2,(uint8_t)16);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  	HAL_TIM_Base_Start_IT(&htim15);
+  	vPrintMotorSpeed(0, 0);
     while (1)
     {
+    	vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+    	HAL_Delay(500);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
     	//vSetRodasDC(dutyCycleD,dutyCycleE);
@@ -217,12 +196,7 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	// Chamada a cada 10 ms
 	if (htim == &htim15){
 		vLineSensorPIDControl();
-    vPrintUART("Teste!\n");
 	}
-  // Chamada a cada 500 ms
-  if (htim == &htim7){
-    // vPrintMotorSpeed(fGetVelocidadeRodaEsquerda(), fGetVelocidadeRodaDireita());
-  }
 }
 /* USER CODE END 4 */
 

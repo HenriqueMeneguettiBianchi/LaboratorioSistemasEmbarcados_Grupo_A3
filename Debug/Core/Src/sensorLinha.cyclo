@@ -7,5 +7,7 @@
 ../Core/Src/sensorLinha.c:142:6:isSensor3DetectingLine	3
 ../Core/Src/sensorLinha.c:146:6:isSensor4DetectingLine	3
 ../Core/Src/sensorLinha.c:150:6:isSensor2DetectingLine	3
-../Core/Src/sensorLinha.c:154:6:ajustarVelocidadeMotores	10
-../Core/Src/sensorLinha.c:215:6:vLineSensorPIDControl	9
+../Core/Src/sensorLinha.c:154:6:isSensor1DetectingLine	3
+../Core/Src/sensorLinha.c:157:6:isSensor5DetectingLine	3
+../Core/Src/sensorLinha.c:161:6:ajustarVelocidadeMotores	8
+../Core/Src/sensorLinha.c:251:6:vLineSensorPIDControl	9

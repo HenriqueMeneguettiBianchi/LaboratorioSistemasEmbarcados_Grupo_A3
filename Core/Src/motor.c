@@ -37,4 +37,6 @@ void vSetRodasDC(float fRodaEsquerdaDC, float fRodaDireitaDC)
 {
   __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000 -1);
   __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_2, fRodaDireitaDC * 1000 -1);
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000 -1);
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_2, fRodaDireitaDC * 1000 -1);
 }

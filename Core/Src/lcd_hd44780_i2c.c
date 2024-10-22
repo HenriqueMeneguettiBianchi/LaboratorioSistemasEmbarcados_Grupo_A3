@@ -412,14 +412,18 @@ void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeRodaDireit
     iVEdec = 100*(fVelocidadeRodaEsquerda - iVEInteiro);
     iVDdec = 100*(fVelocidadeRodaDireita - iVDInteiro);
 
+    // Limpando o display
+    //lcdDisplayClear();
+    //lcdCursorHome();
+
     // Display Test
-    sprintf((char *)ucLCD0Msg, "Speed L: %d,%d", iVEInteiro, iVEdec);
+    sprintf((char *)ucLCD0Msg, "Speed L:  %02d,%01d", iVEInteiro, iVEdec);
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 0);
     // Print text at cursor position
     lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));
 
-    sprintf((char *)ucLCD1Msg, "Speed R: %d,%d", iVDInteiro, iVDdec);
+    sprintf((char *)ucLCD1Msg, "Speed R:  %02d,%01d", iVDInteiro, iVDdec);
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 1);
     // Print text at cursor position

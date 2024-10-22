@@ -60,8 +60,8 @@ all: main-build
 main-build: ES070_RoboSeguidor.elf secondary-outputs
 
 # Tool invocations
-ES070_RoboSeguidor.elf ES070_RoboSeguidor.map: $(OBJS) $(USER_OBJS) C:\Users\erick\Desktop\Gabriel\Unicamp\10_Semestre\ES070\LaboratorioSistemasEmbarcados_Grupo_A3\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "ES070_RoboSeguidor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\erick\Desktop\Gabriel\Unicamp\10_Semestre\ES070\LaboratorioSistemasEmbarcados_Grupo_A3\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ES070_RoboSeguidor.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+ES070_RoboSeguidor.elf ES070_RoboSeguidor.map: $(OBJS) $(USER_OBJS) C:\Users\ibazz\Downloads\encodercerto\LaboratorioSistemasEmbarcados_Grupo_A3-encoderSensorCerto\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "ES070_RoboSeguidor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\ibazz\Downloads\encodercerto\LaboratorioSistemasEmbarcados_Grupo_A3-encoderSensorCerto\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ES070_RoboSeguidor.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

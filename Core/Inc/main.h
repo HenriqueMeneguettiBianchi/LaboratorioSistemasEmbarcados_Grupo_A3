@@ -106,15 +106,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
-// *************************************************************//
-// Method name:         HAL_TIM_PeriodElapsedCallback           //
-// Method description:  Esse método realiza as funções internas //
-//                      quando a interrupção for chamada        //
-// Input parameters:    none                                    //
-// Output parameters:   none                                    //
-// *************************************************************//
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
-
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
