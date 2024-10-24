@@ -31,6 +31,7 @@
 #include "motor.h"
 #include "encoder.h"
 #include "lcd_hd44780_i2c.h"
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -83,8 +84,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-
-	HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -123,6 +123,8 @@ int main(void)
   vLineSensor5Init(&hadc5);
   lcdInit(&hi2c2,(uint8_t)0x27,(uint8_t)2,(uint8_t)16);
   HAL_TIM_Base_Start_IT(&htim15);
+  HAL_TIM_Base_Start_IT(&htim2);
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,7 +133,7 @@ int main(void)
   	//vPrintMotorSpeed(0, 0);
     while (1)
     {
-    	vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+    	// vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
     	//HAL_Delay(10);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
@@ -199,6 +201,10 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	if (htim == &htim15){
 		vLineSensorPIDControl();
 	}
+  if (htim == &htim2)
+  {
+    vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+  }
 }
 /* USER CODE END 4 */
 

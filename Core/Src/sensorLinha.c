@@ -32,7 +32,7 @@ float posicao3;
 float EsquMaiorDir;
 
 int minThresholds[5] = {350, 350, 350, 350, 350};
-int maxThresholds[5] = {640, 650, 550, 620, 620};
+int maxThresholds[5] = {900, 900, 900, 900, 900};
 
 // Variáveis do controlador PID
 float Kp = 0.12f; // Ajuste conforme necessário (0.1)
