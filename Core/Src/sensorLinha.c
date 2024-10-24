@@ -32,10 +32,10 @@ float posicao3;
 float EsquMaiorDir;
 
 int minThresholds[5] = {350, 350, 350, 350, 350};
-int maxThresholds[5] = {650, 650, 600, 650, 650};
+int maxThresholds[5] = {640, 650, 550, 620, 620};
 
 // Variáveis do controlador PID
-float Kp = 0.10f; // Ajuste conforme necessário (0.1)
+float Kp = 0.12f; // Ajuste conforme necessário (0.1)
 float Ki = 0.0f; // Pode iniciar com 0 e ajustar depois
 float Kd = 0.02f; // Pode iniciar com 0 e ajustar depois (0.02)
 
@@ -53,8 +53,8 @@ float delta_time = 0.07f; // Assume um loop de 10ms
 uint32_t previous_time = 0;
 
 // Velocidade base dos motores
-float base_speed = 0.339f; // Valor entre 0.0f e 1.0f
-float max_duty_cycle = 0.35f; // Limite máximo do duty cycle
+float base_speed = 0.34f; // Valor entre 0.0f e 1.0f
+float max_duty_cycle = 0.45f; // Limite máximo do duty cycle
 
 /* Defina o limite para detecção de linha (ajustável) */
 
@@ -127,6 +127,7 @@ float fLineSensorCalculatePosition(void) {
         }
     }
 
+
     // Verifica se algum sensor detectou a linha
     if (totalWeight == 0) {
         // Nenhum sensor detectou a linha
@@ -165,8 +166,8 @@ void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle) {
 
     // Se o sensor 3 estiverem detectando a linha branca e o 2 e 4 nao
     if (isSensor3DetectingLine()&& !isSensor4DetectingLine()&& !isSensor2DetectingLine()) {
-        left_duty_cycle = 0.339;
-        right_duty_cycle = 0.339;
+        left_duty_cycle = 0.341;
+        right_duty_cycle = 0.341;
         fsaidaDutyEsquerda = left_duty_cycle;
         fsaidaDutyDireita = right_duty_cycle;
         vSetRodasDC(left_duty_cycle, right_duty_cycle);
@@ -181,7 +182,7 @@ void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle) {
             if (novoDutyCycleDireita > max_duty_cycle) {
                 novoDutyCycleDireita = max_duty_cycle;
             }
-            vSetRodasDC(left_duty_cycle* 0.8, novoDutyCycleDireita);
+            vSetRodasDC(left_duty_cycle, novoDutyCycleDireita);
         }
         // Se a velocidade da roda direita é maior, ajustamos a esquerda
         else if (velDireita > velEsquerda) {
@@ -193,11 +194,17 @@ void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle) {
             if (novoDutyCycleEsquerda > max_duty_cycle) {
                 novoDutyCycleEsquerda = max_duty_cycle;
             }
-            vSetRodasDC(novoDutyCycleEsquerda, right_duty_cycle * 0.8);
+            vSetRodasDC(novoDutyCycleEsquerda, right_duty_cycle);
         }
     }
+//    if (left_duty_cycle > max_duty_cycle) {
+//    	left_duty_cycle = max_duty_cycle;
+//    }
+//    if (right_duty_cycle > max_duty_cycle) {
+//    	right_duty_cycle = max_duty_cycle;
+//    }
     vSetRodasDC(left_duty_cycle, right_duty_cycle);
-//
+ }
 //    // Se o sensor 3 e o 4 estiverem detectando a linha branca
 //    else if (isSensor3DetectingLine()&& isSensor4DetectingLine()) {
 //			left_duty_cycle = max_duty_cycle + 0.2;
@@ -245,7 +252,7 @@ void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle) {
 //        // Se as velocidades estão equilibradas, aplica os duty cycles normais
 //        vSetRodasDC(left_duty_cycle, right_duty_cycle);
 //    }
-}
+
 
 
 void vLineSensorPIDControl(void) {
@@ -263,7 +270,7 @@ void vLineSensorPIDControl(void) {
     // Verifica se a linha foi detectada
     if (position == 99) {
         // Se nenhum sensor detectar a linha, o carrinho pode parar ou continuar em frente
-        vSetRodasDC(0, 0);
+    	vSetRodasDC(0, 0);
         return;
     }
 
@@ -291,9 +298,9 @@ void vLineSensorPIDControl(void) {
     float right_duty_cycle = base_speed - control_output;
 
     // Garante que os duty cycles estão entre 0 e 1
-    if (left_duty_cycle > 1.0f) left_duty_cycle = max_duty_cycle;
+    if (left_duty_cycle > 0.5f) left_duty_cycle = max_duty_cycle;
     if (left_duty_cycle < 0.0f) left_duty_cycle = base_speed;
-    if (right_duty_cycle > 1.0f) right_duty_cycle = max_duty_cycle;
+    if (right_duty_cycle > 0.5f) right_duty_cycle = max_duty_cycle;
     if (right_duty_cycle < 0.0f) right_duty_cycle = base_speed;
 
     // Chama a função para ajustar a velocidade dos motores

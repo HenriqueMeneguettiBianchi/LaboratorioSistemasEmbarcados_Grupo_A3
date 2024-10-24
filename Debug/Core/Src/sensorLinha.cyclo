@@ -4,10 +4,10 @@
 ../Core/Src/sensorLinha.c:90:6:vLineSensor4Init	1
 ../Core/Src/sensorLinha.c:97:6:vLineSensor5Init	1
 ../Core/Src/sensorLinha.c:105:7:fLineSensorCalculatePosition	5
-../Core/Src/sensorLinha.c:142:6:isSensor3DetectingLine	3
-../Core/Src/sensorLinha.c:146:6:isSensor4DetectingLine	3
-../Core/Src/sensorLinha.c:150:6:isSensor2DetectingLine	3
-../Core/Src/sensorLinha.c:154:6:isSensor1DetectingLine	3
-../Core/Src/sensorLinha.c:157:6:isSensor5DetectingLine	3
-../Core/Src/sensorLinha.c:161:6:ajustarVelocidadeMotores	8
-../Core/Src/sensorLinha.c:251:6:vLineSensorPIDControl	9
+../Core/Src/sensorLinha.c:143:6:isSensor3DetectingLine	3
+../Core/Src/sensorLinha.c:147:6:isSensor4DetectingLine	3
+../Core/Src/sensorLinha.c:151:6:isSensor2DetectingLine	3
+../Core/Src/sensorLinha.c:155:6:isSensor1DetectingLine	3
+../Core/Src/sensorLinha.c:158:6:isSensor5DetectingLine	3
+../Core/Src/sensorLinha.c:162:6:ajustarVelocidadeMotores	8
+../Core/Src/sensorLinha.c:258:6:vLineSensorPIDControl	9

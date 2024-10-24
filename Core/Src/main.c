@@ -83,7 +83,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+
+	HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -121,22 +122,23 @@ int main(void)
   vLineSensor4Init(&hadc4);
   vLineSensor5Init(&hadc5);
   lcdInit(&hi2c2,(uint8_t)0x27,(uint8_t)2,(uint8_t)16);
+  HAL_TIM_Base_Start_IT(&htim15);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  	HAL_TIM_Base_Start_IT(&htim15);
-  	vPrintMotorSpeed(0, 0);
+
+  	//vPrintMotorSpeed(0, 0);
     while (1)
     {
     	vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
-    	HAL_Delay(500);
+    	//HAL_Delay(10);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
     	//vSetRodasDC(dutyCycleD,dutyCycleE);
     	 //vLineSensorPIDControl();
         // Adiciona um pequeno atraso se necessário
-        //HAL_Delay(10);
+        //HAL_Delay(10); e esse o da apresentaçao 2
 
     /* USER CODE END WHILE */
 
