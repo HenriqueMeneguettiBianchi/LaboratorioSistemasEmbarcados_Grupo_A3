@@ -35,6 +35,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "lcd_hd44780_i2c.h"
+#include "stdio.h"
 
 uint8_t lcdCommandBuffer[6] = {0x00};
 
