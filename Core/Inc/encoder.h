@@ -10,6 +10,11 @@
 #define CONTADOR_MAX       50000       // Valor máximo do contador
 #define FATOR_MULTIPLICACAO_VELOCIDADE 20.4f // Fator para conversão de velocidade
 
+extern int overflow1;
+extern int overflow2;
+extern float velocidadeRodaDireita;
+extern float velocidadeRodaEsquerda;
+
 // Funções para inicializar os encoders
 void inicializarEncoders(TIM_HandleTypeDef *timer16, TIM_HandleTypeDef *timer17);
 
@@ -24,6 +29,6 @@ void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *veloci
 
 float fGetVelocidadeRodaEsquerda(void);
 float fGetVelocidadeRodaDireita(void);
-
+__weak void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim);
 
 #endif // ENCODER_H

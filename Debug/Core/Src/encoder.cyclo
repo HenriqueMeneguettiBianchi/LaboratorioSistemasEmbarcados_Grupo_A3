@@ -1,6 +1,6 @@
-../Core/Src/encoder.c:24:6:inicializarEncoders	1
-../Core/Src/encoder.c:29:6:processarCaptura	2
-../Core/Src/encoder.c:46:6:processarCaptura2	2
-../Core/Src/encoder.c:64:6:HAL_TIM_IC_CaptureCallback	3
-../Core/Src/encoder.c:73:7:fGetVelocidadeRodaEsquerda	1
-../Core/Src/encoder.c:78:7:fGetVelocidadeRodaDireita	1
+../Core/Src/encoder.c:27:6:inicializarEncoders	1
+../Core/Src/encoder.c:34:6:processarCaptura	2
+../Core/Src/encoder.c:53:6:processarCaptura2	2
+../Core/Src/encoder.c:73:6:HAL_TIM_IC_CaptureCallback	3
+../Core/Src/encoder.c:83:7:fGetVelocidadeRodaEsquerda	1
+../Core/Src/encoder.c:88:7:fGetVelocidadeRodaDireita	1

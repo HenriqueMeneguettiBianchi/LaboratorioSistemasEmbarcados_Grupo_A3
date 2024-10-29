@@ -32,20 +32,23 @@ float posicao3;
 float EsquMaiorDir;
 
 int minThresholds[5] = {350, 350, 350, 350, 350};
-int maxThresholds[5] = {900, 900, 900, 900, 900};
-
+int maxThresholds[5] = {700, 700, 700, 700, 700};
+//int maxThresholds[5] = {640, 650, 550, 620, 620};
+//int minThresholds[5] = {1000, 1000, 1000, 1000, 1000};
+//int maxThresholds[5] = {3000, 3000, 3000, 3000, 3000};
+float velocidadeEsquerda, velocidadeDireita;
 // Variáveis do controlador PID
-float Kp = 0.12f; // Ajuste conforme necessário (0.1)
-float Ki = 0.0f; // Pode iniciar com 0 e ajustar depois
-float Kd = 0.02f; // Pode iniciar com 0 e ajustar depois (0.02)
+float kp = 4.0;  // Constante Proporcional
+float ki = 0.0;  // Constante Integral
+float kd = 1.2;  // Constante Derivativa
+
+// Definição da velocidade base
+int velocidadeBase = 25;
 
 float error = 0.0f;
 float previous_error = 0.0f;
 float integral_error = 0.0f;
 float derivative_error = 0.0f;
-extern float velocidadeRodaEsquerda;
-extern float velocidadeRodaDireita;
-
 float control_output = 0.0f;
 
 // Variáveis de tempo
@@ -140,121 +143,11 @@ float fLineSensorCalculatePosition(void) {
     return posicao;
 }
 
-bool isSensor3DetectingLine() {
-    return (lineSensor3Value >= minThresholds[2] && lineSensor3Value <= maxThresholds[2]);
-}
-
-bool isSensor4DetectingLine() {
-    return (lineSensor4Value >= minThresholds[3] && lineSensor4Value <= maxThresholds[3]);
-}
-
-bool isSensor2DetectingLine() {
-    return (lineSensor2Value >= minThresholds[1] && lineSensor2Value <= maxThresholds[1]);
-}
-
-bool isSensor1DetectingLine() {
-    return (lineSensor1Value >= minThresholds[0] && lineSensor2Value <= maxThresholds[0]);
-}
-bool isSensor5DetectingLine() {
-    return (lineSensor5Value >= minThresholds[4] && lineSensor2Value <= maxThresholds[4]);
-}
-
-void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle) {
-    // Obtém as velocidades atuais dos motores
-    float velEsquerda = velocidadeRodaEsquerda;  // em cm/s
-    float velDireita = velocidadeRodaDireita;    // em cm/s
-
-    // Se o sensor 3 estiverem detectando a linha branca e o 2 e 4 nao
-    if (isSensor3DetectingLine()&& !isSensor4DetectingLine()&& !isSensor2DetectingLine()) {
-        left_duty_cycle = 0.341;
-        right_duty_cycle = 0.341;
-        fsaidaDutyEsquerda = left_duty_cycle;
-        fsaidaDutyDireita = right_duty_cycle;
-        vSetRodasDC(left_duty_cycle, right_duty_cycle);
-        // Se a velocidade da roda esquerda é maior, ajustamos a direita
-        if (velEsquerda > velDireita) {
-            float ajuste = velEsquerda / velDireita; // Fator de ajuste
-            float novoDutyCycleDireita = right_duty_cycle / ajuste;
-            //EsquMaiorDir = novoDutyCycleDireita;
-            fsaidaDutyDireita =novoDutyCycleDireita;
-            fsaidaDutyEsquerda = left_duty_cycle;
-            // Limita o novo duty cycle para o máximo permitido
-            if (novoDutyCycleDireita > max_duty_cycle) {
-                novoDutyCycleDireita = max_duty_cycle;
-            }
-            vSetRodasDC(left_duty_cycle, novoDutyCycleDireita);
-        }
-        // Se a velocidade da roda direita é maior, ajustamos a esquerda
-        else if (velDireita > velEsquerda) {
-            float ajuste = velDireita / velEsquerda; // Fator de ajuste
-            float novoDutyCycleEsquerda = left_duty_cycle / ajuste;
-            fsaidaDutyEsquerda = novoDutyCycleEsquerda;
-            fsaidaDutyDireita = right_duty_cycle;
-            // Limita o novo duty cycle para o máximo permitido
-            if (novoDutyCycleEsquerda > max_duty_cycle) {
-                novoDutyCycleEsquerda = max_duty_cycle;
-            }
-            vSetRodasDC(novoDutyCycleEsquerda, right_duty_cycle);
-        }
-    }
-//    if (left_duty_cycle > max_duty_cycle) {
-//    	left_duty_cycle = max_duty_cycle;
-//    }
-//    if (right_duty_cycle > max_duty_cycle) {
-//    	right_duty_cycle = max_duty_cycle;
-//    }
-    vSetRodasDC(left_duty_cycle, right_duty_cycle);
- }
-//    // Se o sensor 3 e o 4 estiverem detectando a linha branca
-//    else if (isSensor3DetectingLine()&& isSensor4DetectingLine()) {
-//			left_duty_cycle = max_duty_cycle + 0.2;
-//			right_duty_cycle = max_duty_cycle - 0.1;
-//			fsaidaDutyEsquerda = left_duty_cycle;
-//			fsaidaDutyDireita = right_duty_cycle;
-//			vSetRodasDC(left_duty_cycle, right_duty_cycle);
-//		}
-//
-//    // Se o sensor 3 e o 2 estiverem detectando a linha branca
-//    else if (isSensor3DetectingLine()&& isSensor2DetectingLine()) {
-//        left_duty_cycle = max_duty_cycle - 0.1;
-//        right_duty_cycle = max_duty_cycle +0.2 ;
-//        fsaidaDutyEsquerda = left_duty_cycle;
-//        fsaidaDutyDireita = right_duty_cycle;
-//        vSetRodasDC(left_duty_cycle, right_duty_cycle);
+// Definição das constantes do PID
 
 
-//    // Se a velocidade da roda esquerda é maior, ajustamos a direita
-//    if (velEsquerda > velDireita) {
-//        float ajuste = velEsquerda / velDireita; // Fator de ajuste
-//        float novoDutyCycleDireita = right_duty_cycle / ajuste;
-//        //EsquMaiorDir = novoDutyCycleDireita;
-//        fsaidaDutyDireita =novoDutyCycleDireita;
-//        fsaidaDutyEsquerda = left_duty_cycle;
-//        // Limita o novo duty cycle para o máximo permitido
-//        if (novoDutyCycleDireita > max_duty_cycle) {
-//            novoDutyCycleDireita = max_duty_cycle;
-//        }
-//        vSetRodasDC(left_duty_cycle* 0.8, novoDutyCycleDireita);
-//    }
-//    // Se a velocidade da roda direita é maior, ajustamos a esquerda
-//    else if (velDireita > velEsquerda) {
-//        float ajuste = velDireita / velEsquerda; // Fator de ajuste
-//        float novoDutyCycleEsquerda = left_duty_cycle / ajuste;
-//        fsaidaDutyEsquerda = novoDutyCycleEsquerda;
-//        fsaidaDutyDireita = right_duty_cycle;
-//        // Limita o novo duty cycle para o máximo permitido
-//        if (novoDutyCycleEsquerda > max_duty_cycle) {
-//            novoDutyCycleEsquerda = max_duty_cycle;
-//        }
-//        vSetRodasDC(novoDutyCycleEsquerda, right_duty_cycle * 0.8);
-//    }
-//    else {
-//        // Se as velocidades estão equilibradas, aplica os duty cycles normais
-//        vSetRodasDC(left_duty_cycle, right_duty_cycle);
-//    }
-
-
-
+// Função para ajustar a velocidade das rodas com base na saída do PID
+// Função para ajustar a velocidade das rodas com base na saída do PID
 void vLineSensorPIDControl(void) {
     // Obtém o tempo atual
     uint32_t current_time = HAL_GetTick();
@@ -270,109 +163,38 @@ void vLineSensorPIDControl(void) {
     // Verifica se a linha foi detectada
     if (position == 99) {
         // Se nenhum sensor detectar a linha, o carrinho pode parar ou continuar em frente
-    	vSetRodasDC(0, 0);
+        // Aqui, vamos continuar em frente com velocidade base
+        vSetRodasDC(0, 0);
+    	//vSetRodaDireitaDC(0.5);
+    	   // vSetRodaEsquerdaDC(0.5);
         return;
     }
 
     // Calcula o erro (posição desejada é 0)
-    error = 0 - position; // Inverte o sinal para correção na direção oposta
+    error = 0-position; // Inverte o sinal para correção na direção oposta
 
     // Calcula os termos integral e derivativo
     integral_error += error * delta_time;
     derivative_error = (error - previous_error) / delta_time;
 
     // Calcula a saída do controlador PID
-    control_output = -(Kp * error + Ki * integral_error + Kd * derivative_error);
-    fsaidaControladorLinha = control_output;
+    control_output = -(kp * error + ki * integral_error + kd * derivative_error);
+    fsaidaControladorLinha=control_output;
+    if (control_output == 0) {
+            velocidadeEsquerda = velocidadeBase;
+            velocidadeDireita = velocidadeBase;
+        } else {
+            // Caso contrário, ajusta a velocidade de cada roda com base no output do PID
+            // Se o erro for positivo, roda esquerda acelera e a direita desacelera e vice-versa
+            velocidadeEsquerda = velocidadeBase + control_output;
+            velocidadeDireita = velocidadeBase - control_output;
 
-    // Limita a saída do controlador para evitar saturação
-    if (control_output > max_duty_cycle) control_output = max_duty_cycle;
-    if (control_output < -max_duty_cycle) control_output = -max_duty_cycle;
-
-    // Atualiza o erro e tempo anteriores
-    previous_error = error;
-    previous_time = current_time;
-
-    // Calcula os duty cycles dos motores
-    float left_duty_cycle = base_speed + control_output;
-    float right_duty_cycle = base_speed - control_output;
-
-    // Garante que os duty cycles estão entre 0 e 1
-    if (left_duty_cycle > 0.5f) left_duty_cycle = max_duty_cycle;
-    if (left_duty_cycle < 0.0f) left_duty_cycle = base_speed;
-    if (right_duty_cycle > 0.5f) right_duty_cycle = max_duty_cycle;
-    if (right_duty_cycle < 0.0f) right_duty_cycle = base_speed;
-
-    // Chama a função para ajustar a velocidade dos motores
-    ajustarVelocidadeMotores(left_duty_cycle, right_duty_cycle);
-    //ajustarVelocidadeMotores(.5, .5);
+            // Limitar a velocidade mínima para 0 (evita valores negativos nas rodas)
+            if (velocidadeEsquerda < 0) {
+                velocidadeEsquerda = 0;
+            }
+            if (velocidadeDireita < 0) {
+                velocidadeDireita = 0;
+            }
+        }
 }
-
-
-//void vLineSensorPIDControl(void) {
-//    // Obtém o tempo atual
-//    uint32_t current_time = HAL_GetTick();
-//    delta_time = (current_time - previous_time) / 1000.0f; // Converte ms para segundos
-//
-//    if (delta_time <= 0) {
-//        delta_time = 0.01f; // Evita divisão por zero
-//    }
-//
-//    // Calcula a posição atual a partir dos sensores
-//    float position = fLineSensorCalculatePosition();
-//
-//    // Verifica se a linha foi detectada
-//    if (position == 99) {
-//         //Se nenhum sensor detectar a linha, o carrinho pode parar ou continuar em frente
-//         //Aqui, vamos parar
-//        vSetRodasDC(0, 0);
-//    	//vSetRodaDireitaDC(0.5);
-//    	   // vSetRodaEsquerdaDC(0.5);
-//        return;
-//    }
-//
-//    // Calcula o erro (posição desejada é 0)
-//    error = 0-position; // Inverte o sinal para correção na direção oposta
-//
-//    // Calcula os termos integral e derivativo
-//    integral_error += error * delta_time;
-//    derivative_error = (error - previous_error) / delta_time;
-//
-//    // Calcula a saída do controlador PID
-//    control_output = -(Kp * error + Ki * integral_error + Kd * derivative_error);
-//    fsaidaControladorLinha=control_output;
-//    // Limita a saída do controlador para evitar saturação
-//    if (control_output > max_duty_cycle) control_output = max_duty_cycle;
-//    if (control_output < -max_duty_cycle) control_output = -max_duty_cycle;
-//
-//    // Atualiza o erro e tempo anteriores
-//    previous_error = error;
-//    previous_time = current_time;
-//
-//    // Calcula as velocidades dos motores
-//    float left_speed = base_speed + control_output;
-//    float right_speed = base_speed - control_output;
-//
-//    // Garante que as velocidades estão entre 0 e 1
-//    if (left_speed > 1.0f) left_speed = 1.0f;
-//    if (left_speed < 0.0f) left_speed = 0.0f;
-//    if (right_speed > 1.0f) right_speed = 1.0f;
-//    if (right_speed < 0.0f) right_speed = 0.0f;
-//    if (position == 0) {
-//        left_speed = max_duty_cycle;
-//        right_speed = max_duty_cycle;
-//    }
-//
-//    // Chama a função para ajustar a velocidade dos motores
-//    ajustarVelocidadeMotores(max_duty_cycle);
-//    // Ajusta as velocidades dos motores
-//   //vSetRodasDC(left_speed, right_speed);
-//    //vSetRodaDireitaDC(right_speed);
-//    //vSetRodaEsquerdaDC(left_speed);
-//}
-//void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
-//	// Chamada a cada 10 ms
-//	if (htim == &htim15){
-//		vLineSensorPIDControl();
-//	}
-//}

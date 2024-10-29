@@ -22,10 +22,13 @@ void vLineSensor3Init(ADC_HandleTypeDef *hadc3);
 void vLineSensor4Init(ADC_HandleTypeDef *hadc4);
 void vLineSensor5Init(ADC_HandleTypeDef *hadc5);
 extern float fsaidaControladorLinha;
+extern float velocidadeEsquerda, velocidadeDireita;
 
 // Função para calcular a posição do carrinho com base nos sensores
 float fLineSensorCalculatePosition(void);
 
+void ajustarVelocidadeRodas(float output);
+void vLineSensorPIDControl(void);
 // Declaração da função ajustarVelocidadeMotores
 void ajustarVelocidadeMotores(float left_duty_cycle, float right_duty_cycle);
 

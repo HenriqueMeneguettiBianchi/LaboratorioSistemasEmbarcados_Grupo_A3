@@ -30,18 +30,17 @@
 #include "sensorLinha.h"
 #include "motor.h"
 #include "encoder.h"
+#include "pid.h"
 #include "lcd_hd44780_i2c.h"
-#include <stdlib.h>
 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-float vMotorA, vMotorB;
+float kp1, ki1, kd1,d,e,kp2, ki2, kd2;
 //float dutyCycleE= base_speed;
 //float dutyCycleD= base_speed;
-extern float velocidadeRodaEsquerda;
-extern float velocidadeRodaDireita;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -113,6 +112,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM15_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -123,8 +123,10 @@ int main(void)
   vLineSensor5Init(&hadc5);
   lcdInit(&hi2c2,(uint8_t)0x27,(uint8_t)2,(uint8_t)16);
   HAL_TIM_Base_Start_IT(&htim15);
-  HAL_TIM_Base_Start_IT(&htim2);
-  
+  HAL_TIM_Base_Start_IT(&htim3);
+  vPidInit(3.2, 0.22, 0, 1000, 100);
+      vPidInit2(3.5, 0.5, 0, 1000, 100);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,7 +135,8 @@ int main(void)
   	//vPrintMotorSpeed(0, 0);
     while (1)
     {
-    	// vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+    	//vSetRodasDC(d,e);
+    	//vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
     	//HAL_Delay(10);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
@@ -201,10 +204,22 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	if (htim == &htim15){
 		vLineSensorPIDControl();
 	}
-  if (htim == &htim2)
-  {
-    vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
-  }
+	if (htim == &htim3){
+		ajustaVelocidadeRodas();
+		}
+	if (htim == &htim16){
+		overflow1 +=1;
+		if(overflow1 > 5){
+			velocidadeRodaEsquerda = 0;
+		}
+		}
+	if (htim == &htim17){
+		overflow2 +=1;
+		if(overflow2 > 5){
+			velocidadeRodaDireita = 0;
+		}
+		}
+
 }
 /* USER CODE END 4 */
 
