@@ -18,23 +18,35 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
+#include "dma.h"
+#include "i2c.h"
 #include "usart.h"
 #include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "sensorLinha.h"
+#include "motor.h"
+#include "encoder.h"
+#include "lcd_hd44780_i2c.h"
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+float vMotorA, vMotorB;
+//float dutyCycleE= base_speed;
+//float dutyCycleD= base_speed;
+extern float velocidadeRodaEsquerda;
+extern float velocidadeRodaDireita;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -65,7 +77,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -88,27 +99,48 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_LPUART1_UART_Init();
   MX_TIM1_Init();
+  MX_I2C2_Init();
+  MX_ADC3_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+  MX_ADC4_Init();
+  MX_ADC5_Init();
+  MX_TIM16_Init();
+  MX_TIM17_Init();
+  MX_TIM6_Init();
+  MX_TIM15_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-
+  vMotorInit(&htim1);
+  inicializarEncoders(&htim16, &htim17);
+  vLineSensor1Init(&hadc1);
+  vLineSensor2Init(&hadc2);
+  vLineSensor3Init(&hadc3);
+  vLineSensor4Init(&hadc4);
+  vLineSensor5Init(&hadc5);
+  lcdInit(&hi2c2,(uint8_t)0x27,(uint8_t)2,(uint8_t)16);
+  HAL_TIM_Base_Start_IT(&htim15);
+  HAL_TIM_Base_Start_IT(&htim2);
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	  HAL_GPIO_WritePin(EnMotorA_GPIO_Port, EnMotorA_Pin, 1);
-	  //IN1 = 1 e IN2 = 0 : TRAS
-	  //IN1 = 0 e IN2 = 1 : FRENTE
-	  //IN3 = 1 e IN4 = 0 : TRAS
-	  //IN3 = 0 e IN4 = 1 : FRENTE
-	  HAL_GPIO_WritePin(IN1_GPIO_Port, IN1_Pin, 0);
-	  HAL_GPIO_WritePin(IN2_GPIO_Port, IN2_Pin, 0);
 
-	  TIM1->CCR2 = 100;
+  	//vPrintMotorSpeed(0, 0);
+    while (1)
+    {
+    	// vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+    	//HAL_Delay(10);
+        // Controla o PID para ajustar os motores
+        //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
+    	//vSetRodasDC(dutyCycleD,dutyCycleE);
+    	 //vLineSensorPIDControl();
+        // Adiciona um pequeno atraso se necessário
+        //HAL_Delay(10); e esse o da apresentaçao 2
 
     /* USER CODE END WHILE */
 
@@ -164,7 +196,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
+	// Chamada a cada 10 ms
+	if (htim == &htim15){
+		vLineSensorPIDControl();
+	}
+  if (htim == &htim2)
+  {
+    vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+  }
+}
 /* USER CODE END 4 */
 
 /**

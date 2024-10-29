@@ -1,78 +1,42 @@
 // *********************************************************************//
 // File name: 		    motor.c                                         //
-// File description: 	This file has the implementations               //
-// 						of needed to use PWM controll on motor          //
+// File description: 	Esse codigo implementa o funcionamento do motor	//          										//
 // Author name:			Gabriel Erick Matheus Imamura                   //
 //						Guilherme Augusto Vieira Palma                  //
 //                      Henrique Meneguetti Bianchi                     //
 //                      João Vitor Gomes Do N. De Siqueira              //
-//                      Paulo Roberto De Araújo Junior                  //
-// Creation date:		27aug2024                                       //
-// Revision date:		27aug2024                                       //
+//                      Paulo Roberto De Araújo Junior  				//
+//						Suellen Ribeiro									//
+// Creation date:		27ago2024                                       //
+// Revision date:		29set2024                                       //
 // *********************************************************************//
 
-#include "motor.h"
+#include <motor.h>
+#include <main.h>
+#include "tim.h"
 
-TIM_HandleTypeDef *htimRodaEsquerda;
-TIM_HandleTypeDef *htimRodaDireita;
+TIM_HandleTypeDef *htimRodaMotores;
+// ********************************************************** //
+// Method name:        vMotoresInit               			  //
+// Method description: Inicializa o timer do PWM pros motores //
+// Input params:       htimRodaMotores                 		  //
+// Output params:      n/a                          		  //
+// ********************************************************** //
 
-// *************************************************************//
-// Method name:         vMotorInit                              //
-// Method description: 	Inicia TIM motor como PWM               //
-// Input parameters:    *htimRE -> TIM handler da roda esquerda //
-//                      *htimRD -> TIM handler da roda direita  //
-// Output parameters:   none                                    //
-// *************************************************************//
-void vMotorInit(TIM_HandleTypeDef *htimRE, TIM_HandleTypeDef *htimRD)
-{
-  htimRodaEsquerda = htimRE;
-  htimRodaDireita = htimRD;
-  HAL_TIM_PWM_Start(htimRE, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(htimRE, TIM_CHANNEL_2);
+void vMotorInit(TIM_HandleTypeDef *htim){
+	htimRodaMotores = htim;
+	HAL_TIM_PWM_Start(htimRodaMotores, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(htimRodaMotores, TIM_CHANNEL_2);
+	HAL_GPIO_WritePin(Motor_Dir_IN1_GPIO_Port, Motor_Dir_IN1_Pin, 0);
+	HAL_GPIO_WritePin(Motot_Dir_IN2_GPIO_Port, Motot_Dir_IN2_Pin, 1);
+	HAL_GPIO_WritePin(Motor_Esq_IN3_GPIO_Port, Motor_Esq_IN3_Pin, 0);
+	HAL_GPIO_WritePin(Motor_Esq_IN4_GPIO_Port, Motor_Esq_IN4_Pin, 1);
 }
 
-// *************************************************************//
-// Method name:         vSetRodaEsquerdaDC                      //
-// Method description: 	Seta o duty cycle da roda esquerda      //
-// Input parameters:	  fRodaEsquerdaDC -> duty cylce desejado  //
-// Output parameters:   none                                    //
-// *************************************************************//
-void vSetRodaEsquerdaDC(float fRodaEsquerdaDC)
+void vSetRodasDC(float fRodaEsquerdaDC, float fRodaDireitaDC)
 {
-  __HAL_TIM_SET_COMPARE(htimRodaEsquerda, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000);
-}
-
-// *************************************************************//
-// Method name:         vSetRodaDireitaDC                       //
-// Method description: 	Seta o duty cycle da roda direita       //
-// Input parameters:	  fRodaDireitaDC -> duty cylce desejado   //
-// Output parameters:   none                                    //
-// *************************************************************//
-void vSetRodaDireitaDC(float fRodaDireitaDC)
-{
-  __HAL_TIM_SET_COMPARE(htimRodaDireita, TIM_CHANNEL_2, fRodaDireitaDC * 1000);
-}
-
-// *************************************************************//
-// Method name:         vRodaEsquerdaHandler                    //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      esquerda                                //
-// Input parameters:	  none                                    //
-// Output parameters:	  none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaEsquerdaHandler(void)
-{
-  return htimRodaEsquerda;
-}
-
-// *************************************************************//
-// Method name:         vRodaDireitaHandler                     //
-// Method description: 	Retorna o endereço handler da roda      //
-//                      direita                                 //
-// Input parameters:	  none                                    //
-// Output parameters:	  none                                    //
-// *************************************************************//
-TIM_HandleTypeDef *vRodaDireitaHandler(void)
-{
-  return htimRodaDireita;
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000 -1);
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_2, fRodaDireitaDC * 1000 -1);
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_1, fRodaEsquerdaDC * 1000 -1);
+  __HAL_TIM_SET_COMPARE(htimRodaMotores, TIM_CHANNEL_2, fRodaDireitaDC * 1000 -1);
 }

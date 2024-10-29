@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := SeguidorDeLinha
+BUILD_ARTIFACT_NAME := ES070_RoboSeguidor
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-SeguidorDeLinha.elf \
+ES070_RoboSeguidor.elf \
 
 MAP_FILES += \
-SeguidorDeLinha.map \
+ES070_RoboSeguidor.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-SeguidorDeLinha.list \
+ES070_RoboSeguidor.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: SeguidorDeLinha.elf secondary-outputs
+main-build: ES070_RoboSeguidor.elf secondary-outputs
 
 # Tool invocations
-SeguidorDeLinha.elf SeguidorDeLinha.map: $(OBJS) $(USER_OBJS) C:\ES070\SeguidorDeLinha\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SeguidorDeLinha.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\ES070\SeguidorDeLinha\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SeguidorDeLinha.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+ES070_RoboSeguidor.elf ES070_RoboSeguidor.map: $(OBJS) $(USER_OBJS) C:\Users\erick\Desktop\Gabriel\Unicamp\10_Semestre\ES070\LaboratorioSistemasEmbarcados_Grupo_A3\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "ES070_RoboSeguidor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\erick\Desktop\Gabriel\Unicamp\10_Semestre\ES070\LaboratorioSistemasEmbarcados_Grupo_A3\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ES070_RoboSeguidor.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-SeguidorDeLinha.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "SeguidorDeLinha.list"
+ES070_RoboSeguidor.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ES070_RoboSeguidor.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) SeguidorDeLinha.elf SeguidorDeLinha.list SeguidorDeLinha.map default.size.stdout
+	-$(RM) ES070_RoboSeguidor.elf ES070_RoboSeguidor.list ES070_RoboSeguidor.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
