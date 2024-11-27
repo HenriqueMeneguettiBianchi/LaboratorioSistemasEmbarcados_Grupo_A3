@@ -56,7 +56,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t rxData;
+int iLCDcounter = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -113,6 +114,7 @@ int main(void)
   MX_TIM15_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -125,7 +127,10 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim15);
   HAL_TIM_Base_Start_IT(&htim3);
   vPidInit(3.2, 0.22, 0, 1000, 100);
-      vPidInit2(3.5, 0.5, 0, 1000, 100);
+  vPidInit2(3.5, 0.5, 0, 1000, 100);
+
+  //Bluetooth
+  HAL_UART_Receive_IT(&huart3,&rxData,1);
 
   /* USER CODE END 2 */
 
@@ -136,7 +141,13 @@ int main(void)
     while (1)
     {
     	//vSetRodasDC(d,e);
-    	//vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+      // Atualiza LCD a cada 50 ciclos
+    	if (50 <= iLCDcounter)
+      {
+        vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+        iLCDcounter = 0;
+      }
+      else iLCDcounter += 1;
     	//HAL_Delay(10);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
@@ -219,6 +230,64 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 			velocidadeRodaDireita = 0;
 		}
 		}
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart->Instance==USART3)
+  {
+    // Acender todos os LEDS
+    if(rxData=='9'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 1);
+    	HAL_GPIO_WritePin(LED_R_PWM_GPIO_Port, LED_R_PWM_Pin, 1);
+    	HAL_GPIO_WritePin(LED_Y_PWM_GPIO_Port, LED_Y_PWM_Pin, 1);
+    }
+    // Apaga todos os LEDS
+    else if (rxData=='8'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
+    	HAL_GPIO_WritePin(LED_R_PWM_GPIO_Port, LED_R_PWM_Pin, 0);
+    	HAL_GPIO_WritePin(LED_Y_PWM_GPIO_Port, LED_Y_PWM_Pin, 0);
+    }
+    else if (rxData=='7'){
+    	//
+    }
+    else if (rxData=='6'){
+    	//
+    }
+    // Retorna a velocidade nas rodas
+    else if (rxData=='5'){
+    	char report[100];
+    	sprintf(report,
+        "Relatório das Rodas:\r\n"
+        "- Roda Esquerda: %d\r\n"
+        "- Roda Direita: %d\r\n"
+        velocidadeRodaEsquerda,
+        velocidadeRodaDireita);
+    HAL_UART_Transmit(&huart3, (uint8_t *)report, strlen(report), HAL_MAX_DELAY);
+    }
+    // Para a movimentação do carro
+    else if (rxData=='4'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
+    }
+    //Move o carro para Esquerda
+    else if (rxData=='3'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
+    }
+    //Move o carro para Direita
+    else if (rxData=='2'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
+    }
+    // Move o carro para frente
+    else if (rxData=='1'){
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
+    }
+
+    HAL_UART_Receive_IT(&huart3,&rxData,1); // Habilitando o recebimento de interrupção novamente
+  }
+}
 
 }
 /* USER CODE END 4 */

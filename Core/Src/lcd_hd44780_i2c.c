@@ -417,27 +417,19 @@ void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeRodaDireit
     //lcdCursorHome();
 
     // Display Test
-    sprintf((char *)ucLCD0Msg, "Speed L:  %02d,%01d", iVEInteiro, iVEdec);
+    // Filtering the lowest speeds
+    if (10 <= fVelocidadeRodaEsquerda) sprintf((char *)ucLCD0Msg, "Speed L:  %02d,%02d ", iVEInteiro, iVEdec);
+    else sprintf((char *)ucLCD0Msg, "Speed L:  00,00 ", iVEInteiro, iVEdec);
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 0);
     // Print text at cursor position
     lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));
 
-    sprintf((char *)ucLCD1Msg, "Speed R:  %02d,%01d", iVDInteiro, iVDdec);
+    // Filter low speeds
+    if (10 <= fVelocidadeRodaDireita) sprintf((char *)ucLCD1Msg, "Speed R:  %02d,%02d ", iVDInteiro, iVDdec);
+    else sprintf((char *)ucLCD1Msg, "Speed R:  00,00 ", iVDInteiro, iVDdec);
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 1);
     // Print text at cursor position
     lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
 }
-
-// *************************************************************//
-// Method name:         HAL_TIM_PeriodElapsedCallback           //
-// Method description:  Esse método realiza as funções internas //
-//                      quando a interrupção for chamada        //
-// Input parameters:    none                                    //
-// Output parameters:	none                                    //
-// *************************************************************//
-// __weak void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim)
-// {
-//   // Função movida para main
-// }
