@@ -7,4 +7,5 @@
 ../Core/Src/lcd_hd44780_i2c.c:332:6:lcdLoadCustomChar	3
 ../Core/Src/lcd_hd44780_i2c.c:360:13:lcdWriteByte	4
 ../Core/Src/lcd_hd44780_i2c.c:388:6:lcdChecki2c	2
-../Core/Src/lcd_hd44780_i2c.c:404:6:vPrintMotorSpeed	1
+../Core/Src/lcd_hd44780_i2c.c:404:6:vPrintMotorSpeed	3
+../Core/Src/lcd_hd44780_i2c.c:433:6:vPrintString	1

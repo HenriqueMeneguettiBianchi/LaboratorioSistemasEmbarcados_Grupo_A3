@@ -1,0 +1,5 @@
+../Core/Src/sensorUltrassonico.c:30:7:fDistanceSensorGetSensorDistance	17
+../Core/Src/sensorUltrassonico.c:79:6:vDistanceSensorInitSensors	1
+../Core/Src/sensorUltrassonico.c:100:6:vDistanceSensorSetRightDistance	1
+../Core/Src/sensorUltrassonico.c:106:7:fDistanceSensorGetRightDistance	1
+../Core/Src/sensorUltrassonico.c:112:6:vDistanceSensorInputCaptureCallback	3

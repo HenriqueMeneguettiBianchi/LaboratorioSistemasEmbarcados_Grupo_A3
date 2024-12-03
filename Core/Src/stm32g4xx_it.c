@@ -65,6 +65,7 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim15;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
+extern TIM_HandleTypeDef htim20;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -362,6 +363,62 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
   /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM20 break interrupt.
+  */
+void TIM20_BRK_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM20_BRK_IRQn 0 */
+
+  /* USER CODE END TIM20_BRK_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim20);
+  /* USER CODE BEGIN TIM20_BRK_IRQn 1 */
+
+  /* USER CODE END TIM20_BRK_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM20 update interrupt.
+  */
+void TIM20_UP_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM20_UP_IRQn 0 */
+
+  /* USER CODE END TIM20_UP_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim20);
+  /* USER CODE BEGIN TIM20_UP_IRQn 1 */
+
+  /* USER CODE END TIM20_UP_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM20 trigger and commutation interrupts.
+  */
+void TIM20_TRG_COM_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM20_TRG_COM_IRQn 0 */
+
+  /* USER CODE END TIM20_TRG_COM_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim20);
+  /* USER CODE BEGIN TIM20_TRG_COM_IRQn 1 */
+
+  /* USER CODE END TIM20_TRG_COM_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM20 capture compare interrupt.
+  */
+void TIM20_CC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM20_CC_IRQn 0 */
+
+  /* USER CODE END TIM20_CC_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim20);
+  /* USER CODE BEGIN TIM20_CC_IRQn 1 */
+
+  /* USER CODE END TIM20_CC_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

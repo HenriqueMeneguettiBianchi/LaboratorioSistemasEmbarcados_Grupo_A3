@@ -1,6 +1,5 @@
 ../Core/Src/encoder.c:27:6:inicializarEncoders	16	static
-../Core/Src/encoder.c:34:6:processarCaptura	32	static
-../Core/Src/encoder.c:53:6:processarCaptura2	32	static
-../Core/Src/encoder.c:73:6:HAL_TIM_IC_CaptureCallback	16	static
-../Core/Src/encoder.c:83:7:fGetVelocidadeRodaEsquerda	4	static
-../Core/Src/encoder.c:88:7:fGetVelocidadeRodaDireita	4	static
+../Core/Src/encoder.c:34:6:processarCapturaRodaEsquerda	24	static
+../Core/Src/encoder.c:53:6:processarCapturaRodaDireita	24	static
+../Core/Src/encoder.c:75:7:fGetVelocidadeRodaEsquerda	4	static
+../Core/Src/encoder.c:80:7:fGetVelocidadeRodaDireita	4	static

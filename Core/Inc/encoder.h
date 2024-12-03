@@ -22,9 +22,9 @@ void inicializarEncoders(TIM_HandleTypeDef *timer16, TIM_HandleTypeDef *timer17)
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
 
 // Função para processar a captura de pulsos do encoder
-void processarCaptura(TIM_HandleTypeDef *htim, float *frequencia, float *velocidade);
+void processarCapturaRodaEsquerda(TIM_HandleTypeDef *htim);
 
-void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *velocidade);
+void processarCapturaRodaDireita(TIM_HandleTypeDef *htim);
 
 
 float fGetVelocidadeRodaEsquerda(void);

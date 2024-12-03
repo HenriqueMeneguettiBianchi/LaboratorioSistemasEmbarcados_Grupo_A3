@@ -31,7 +31,7 @@ void inicializarEncoders(TIM_HandleTypeDef *timer16, TIM_HandleTypeDef *timer17)
     HAL_TIM_Base_Start_IT(timer17);
 }
 
-void processarCaptura(TIM_HandleTypeDef *htim, float *frequencia, float *velocidade) {
+void processarCapturaRodaEsquerda(TIM_HandleTypeDef *htim) {
     if (flagPrimeiraCaptura == 0)
     {	overflow1 =0;
     	valorCaptura1 = htim->Instance->CCR1;
@@ -41,8 +41,8 @@ void processarCaptura(TIM_HandleTypeDef *htim, float *frequencia, float *velocid
         valorCaptura2 += contadorMaximo*overflow1;
         diferencaTempo = (valorCaptura2 - valorCaptura1);
         float clockReferencia = FREQUENCIA_CLOCK / PRESCALAR_TIMER;
-        *frequencia = clockReferencia / diferencaTempo;
-        *velocidade = (*frequencia / 20) * FATOR_MULTIPLICACAO_VELOCIDADE;
+        frequenciaRodaEsquerda = clockReferencia / diferencaTempo;
+        velocidadeRodaEsquerda = (frequenciaRodaEsquerda / 20) * FATOR_MULTIPLICACAO_VELOCIDADE;
 
         __HAL_TIM_SET_COUNTER(htim, 0);
         flagPrimeiraCaptura = 0;
@@ -50,7 +50,7 @@ void processarCaptura(TIM_HandleTypeDef *htim, float *frequencia, float *velocid
     }
 }
 
-void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *velocidade) {
+void processarCapturaRodaDireita(TIM_HandleTypeDef *htim) {
     if (flagPrimeiraCaptura2 == 0)
     {	overflow2 =0;
     	valorCaptura3 = htim->Instance->CCR1;
@@ -60,8 +60,8 @@ void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *veloci
         valorCaptura4 += contadorMaximo*overflow2;
         diferencaTempo2 = (valorCaptura4 - valorCaptura3);
         float clockReferencia = FREQUENCIA_CLOCK / PRESCALAR_TIMER;
-        *frequencia = clockReferencia / diferencaTempo2;
-        *velocidade = (*frequencia / 20) * FATOR_MULTIPLICACAO_VELOCIDADE;
+        frequenciaRodaDireita = clockReferencia / diferencaTempo2;
+        velocidadeRodaDireita = (frequenciaRodaDireita / 20) * FATOR_MULTIPLICACAO_VELOCIDADE;
 
         __HAL_TIM_SET_COUNTER(htim, 0);
         flagPrimeiraCaptura2 = 0;
@@ -70,15 +70,7 @@ void processarCaptura2(TIM_HandleTypeDef *htim, float *frequencia, float *veloci
 }
 
 
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-    if (htim == &htim16) {
-        processarCaptura(htim, &frequenciaRodaEsquerda, &velocidadeRodaEsquerda);
-    }
-    if (htim == &htim17) {
-        processarCaptura2(htim, &frequenciaRodaDireita, &velocidadeRodaDireita);
 
-    }
-}
 
 float fGetVelocidadeRodaEsquerda(void)
 {

@@ -31,7 +31,7 @@
 
 
  */
-
+#include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
 #include "lcd_hd44780_i2c.h"
@@ -412,14 +412,10 @@ void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeRodaDireit
     iVEdec = 100*(fVelocidadeRodaEsquerda - iVEInteiro);
     iVDdec = 100*(fVelocidadeRodaDireita - iVDInteiro);
 
-    // Limpando o display
-    //lcdDisplayClear();
-    //lcdCursorHome();
-
     // Display Test
     // Filtering the lowest speeds
     if (10 <= fVelocidadeRodaEsquerda) sprintf((char *)ucLCD0Msg, "Speed L:  %02d,%02d ", iVEInteiro, iVEdec);
-    else sprintf((char *)ucLCD0Msg, "Speed L:  00,00 ", iVEInteiro, iVEdec);
+    else sprintf((char *)ucLCD0Msg, "Speed L:  00,00 ");
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 0);
     // Print text at cursor position
@@ -427,9 +423,29 @@ void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeRodaDireit
 
     // Filter low speeds
     if (10 <= fVelocidadeRodaDireita) sprintf((char *)ucLCD1Msg, "Speed R:  %02d,%02d ", iVDInteiro, iVDdec);
-    else sprintf((char *)ucLCD1Msg, "Speed R:  00,00 ", iVDInteiro, iVDdec);
+    else sprintf((char *)ucLCD1Msg, "Speed R:  00,00 ");
     // Set cursor at zero position of line 0
     lcdSetCursorPosition(0, 1);
     // Print text at cursor position
     lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));
+}
+
+void vPrintString(char* strLinha0, char* strLinha1){
+
+    unsigned char ucLCD0Msg[17], ucLCD1Msg[17];
+
+    // Garantir que as strings não ultrapassem 16 caracteres
+    strncpy((char *)ucLCD0Msg, strLinha0, 16);
+    ucLCD0Msg[16] = '\0';  // Garantir que a string tenha terminação nula
+
+    strncpy((char *)ucLCD1Msg, strLinha1, 16);
+    ucLCD1Msg[16] = '\0';  // Garantir que a string tenha terminação nula
+
+    // Exibir a primeira string na primeira linha do display
+    lcdSetCursorPosition(0, 0);  // Define a posição do cursor para a linha 0
+    lcdPrintStr((uint8_t*)ucLCD0Msg, strlen((char *)ucLCD0Msg));  // Imprime a string
+
+    // Exibir a segunda string na segunda linha do display
+    lcdSetCursorPosition(0, 1);  // Define a posição do cursor para a linha 1
+    lcdPrintStr((uint8_t*)ucLCD1Msg, strlen((char *)ucLCD1Msg));  // Imprime a string
 }

@@ -152,6 +152,7 @@ void vPrintMotorSpeed(float fVelocidadeRodaEsquerda, float fVelocidadeROdaDireit
 // *************************************************************//
 // void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
 
+void vPrintString(char* strLinha0, char* strLinha1);
 /* C++ detection */
 #ifdef __cplusplus
 }

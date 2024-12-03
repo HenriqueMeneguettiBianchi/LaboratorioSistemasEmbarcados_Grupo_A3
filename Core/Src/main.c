@@ -15,6 +15,8 @@
   *
   ******************************************************************************
   */
+
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -27,11 +29,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdio.h"
 #include "sensorLinha.h"
 #include "motor.h"
 #include "encoder.h"
 #include "pid.h"
 #include "lcd_hd44780_i2c.h"
+#include "sensorUltrassonico.h"
 
 /* USER CODE END Includes */
 
@@ -57,7 +61,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim);
 
 /* USER CODE BEGIN PV */
 uint8_t rxData;
+volatile uint8_t rxData_M= 0;
+
+int iColisao = 0;
+
+int iCarroParado = 0;
+
 int iLCDcounter = 0;
+
+float fVelocidadeEsquerdaAntiga, fVelocidadeDireitaAntiga;
+
+float fDistancia;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,6 +130,8 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART3_UART_Init();
+  MX_TIM8_Init();
+  MX_TIM20_Init();
   /* USER CODE BEGIN 2 */
   vMotorInit(&htim1);
   inicializarEncoders(&htim16, &htim17);
@@ -129,8 +146,13 @@ int main(void)
   vPidInit(3.2, 0.22, 0, 1000, 100);
   vPidInit2(3.5, 0.5, 0, 1000, 100);
 
+  //Buzzer
+  vDistanceSensorInitSensors(&htim20, TIM_CHANNEL_1, &htim3, TIM_CHANNEL_1);
+
   //Bluetooth
   HAL_UART_Receive_IT(&huart3,&rxData,1);
+
+
 
   /* USER CODE END 2 */
 
@@ -140,14 +162,71 @@ int main(void)
   	//vPrintMotorSpeed(0, 0);
     while (1)
     {
+    	__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 0);
+//    	iColisao = 0;
+
+
+    	if((iCarroParado == 1) && (iColisao == 0)){
+    		vPrintString("      MODO      ", "     MANUAL     ");
+    	}
+
+
+    	if ((5 <= iLCDcounter) && (rxData_M == 0) && (iColisao == 0))
+
+	    {
+			if ((fVelocidadeEsquerdaAntiga == velocidadeRodaEsquerda) && (fVelocidadeDireitaAntiga != velocidadeRodaDireita))
+			  {
+				vPrintMotorSpeed(0, velocidadeRodaDireita);
+			  }
+			  else if ((fVelocidadeEsquerdaAntiga != velocidadeRodaEsquerda) && (fVelocidadeDireitaAntiga == velocidadeRodaDireita))
+			  {
+				vPrintMotorSpeed(velocidadeRodaEsquerda, 0);
+			  }
+			  else if ((fVelocidadeEsquerdaAntiga != velocidadeRodaEsquerda) && (fVelocidadeDireitaAntiga != velocidadeRodaDireita))
+			  {
+				vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
+			  }
+			  else if ((fVelocidadeEsquerdaAntiga == velocidadeRodaEsquerda) && (fVelocidadeDireitaAntiga == velocidadeRodaDireita))
+			  {
+				vPrintMotorSpeed(0, 0);
+			  }
+
+			  fVelocidadeEsquerdaAntiga = velocidadeRodaEsquerda;
+		      fVelocidadeDireitaAntiga = velocidadeRodaDireita;
+		      iLCDcounter=0;
+	    }
+
+
+
+    	if(HAL_GPIO_ReadPin(Colisao_GPIO_Port, Colisao_Pin) == 1){
+
+    		__HAL_TIM_SET_COMPARE(&htim8, TIM_CHANNEL_1, 999);
+    		vPrintString("    ATENCAO  !! ", "  HOUVE COLISAO ");
+    		vSetRodasDC(0,0);
+    		iColisao = 1;
+
+    	}
+    	else{
+    		iColisao = 0;
+    	}
+    	fDistancia = fDistanceSensorGetRightDistance();
+    	if (fDistancia < 20)
+    	{
+    		vPrintString("    ATENCAO  !! ", "  HAVERA COLISAO ");
+    		vSetRodasDC(0,0);
+			iColisao = 1;
+    	}
+
+
+//    	if( iColisao == 1){
+//    	    vPrintString("    ATENCAO  !! ", "  HOUVE COLISAO ");
+//    	    vSetRodasDC(0,0);
+//    	    rxData_M = 1;
+//    	}
+
+
     	//vSetRodasDC(d,e);
-      // Atualiza LCD a cada 50 ciclos
-    	if (50 <= iLCDcounter)
-      {
-        vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
-        iLCDcounter = 0;
-      }
-      else iLCDcounter += 1;
+    	//vPrintMotorSpeed(velocidadeRodaEsquerda, velocidadeRodaDireita);
     	//HAL_Delay(10);
         // Controla o PID para ajustar os motores
         //vLineSensorPIDControl(velocidadeRodaEsquerda, velocidadeRodaDireita);
@@ -212,84 +291,126 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim){
 	// Chamada a cada 10 ms
-	if (htim == &htim15){
-		vLineSensorPIDControl();
+	iCarroParado = 0;
+	if (rxData_M == 0 && iColisao ==0){
+		if (htim == &htim15){
+			vLineSensorPIDControl();
+		}
+		if (htim == &htim3){
+			ajustaVelocidadeRodas();
+			}
+		if (htim == &htim16){
+			overflow1 +=1;
+			if(overflow1 > 5){
+				velocidadeRodaEsquerda = 0;
+			}
+			}
+		if (htim == &htim17){
+			overflow2 +=1;
+			if(overflow2 > 5){
+				velocidadeRodaDireita = 0;
+			}
+		}
 	}
-	if (htim == &htim3){
-		ajustaVelocidadeRodas();
+	else if((iColisao == 1)){
+		vSetRodasDC(0,0);
+	}
+	else if((fDistancia < 20) && rxData_M == 0){
+			vSetRodasDC(0,0);
 		}
-	if (htim == &htim16){
-		overflow1 +=1;
-		if(overflow1 > 5){
-			velocidadeRodaEsquerda = 0;
-		}
-		}
-	if (htim == &htim17){
-		overflow2 +=1;
-		if(overflow2 > 5){
-			velocidadeRodaDireita = 0;
-		}
-		}
+	if (htim == &htim15){
+		iLCDcounter += 1;
+	}
+}
 
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+	if (htim == pDistanceSensorTIM)
+	{
+		vDistanceSensorInputCaptureCallback(htim);
+	}
+    if (htim == &htim16) {
+        processarCapturaRodaEsquerda(htim);
+    }
+    if (htim == &htim17) {
+        processarCapturaRodaDireita(htim);
+
+    }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
+
   if(huart->Instance==USART3)
   {
-    // Acender todos os LEDS
-    if(rxData=='9'){
-    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 1);
-    	HAL_GPIO_WritePin(LED_R_PWM_GPIO_Port, LED_R_PWM_Pin, 1);
-    	HAL_GPIO_WritePin(LED_Y_PWM_GPIO_Port, LED_Y_PWM_Pin, 1);
+
+	if(rxData=='M') // Modo Manual
+	{
+		rxData_M = 1;
+		iCarroParado = 1;
+
+	}
+	else if (rxData=='A') // Modo Automático
+	{
+	    rxData_M = 0;
+	}
+	else if(rxData=='1') // Move para frente
+	{
+		vSetRodasDC(1,1);
+		iCarroParado = 1;
+		while(HAL_GPIO_ReadPin(Colisao_GPIO_Port, Colisao_Pin) == 1){
+			vSetRodasDC(0,0);
+			iColisao = 1;
+		}
+	}
+	else if (rxData=='2') // Gira para direita
+	{
+		vSetRodasDC(1,0);
+		iCarroParado = 1;
+		while(HAL_GPIO_ReadPin(Colisao_GPIO_Port, Colisao_Pin) == 1){
+			vSetRodasDC(0,0);
+			iColisao = 1;
+		}
+	}
+	else if (rxData=='3') // Gira para esquerda
+	{
+		vSetRodasDC(0,1);
+		iCarroParado = 1;
+		while(HAL_GPIO_ReadPin(Colisao_GPIO_Port, Colisao_Pin) == 1){
+			vSetRodasDC(0,0);
+			iColisao = 1;
+		}
+	}
+	else if (rxData=='4') // Para o veículo
+	{
+		vSetRodasDC(0,0);
+	}
+
+    else if (rxData=='6')
+    {
+
     }
-    // Apaga todos os LEDS
-    else if (rxData=='8'){
+    else if (rxData=='7')
+    {
+
+    }
+    else if (rxData=='8') // Apaga todos os LEDs
+    {
     	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
     	HAL_GPIO_WritePin(LED_R_PWM_GPIO_Port, LED_R_PWM_Pin, 0);
-    	HAL_GPIO_WritePin(LED_Y_PWM_GPIO_Port, LED_Y_PWM_Pin, 0);
+    	HAL_GPIO_WritePin(LED_B_PWM_GPIO_Port, LED_B_PWM_Pin, 0);
     }
-    else if (rxData=='7'){
-    	//
+    else if (rxData=='9') // Acendo todos os LEDs
+    {
+    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 1);
+    	HAL_GPIO_WritePin(LED_R_PWM_GPIO_Port, LED_R_PWM_Pin, 1);
+    	HAL_GPIO_WritePin(LED_B_PWM_GPIO_Port, LED_B_PWM_Pin, 1);
     }
-    else if (rxData=='6'){
-    	//
-    }
-    // Retorna a velocidade nas rodas
-    else if (rxData=='5'){
-    	char report[100];
-    	sprintf(report,
-        "Relatório das Rodas:\r\n"
-        "- Roda Esquerda: %d\r\n"
-        "- Roda Direita: %d\r\n"
-        velocidadeRodaEsquerda,
-        velocidadeRodaDireita);
-    HAL_UART_Transmit(&huart3, (uint8_t *)report, strlen(report), HAL_MAX_DELAY);
-    }
-    // Para a movimentação do carro
-    else if (rxData=='4'){
-    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
-    }
-    //Move o carro para Esquerda
-    else if (rxData=='3'){
-    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
-    }
-    //Move o carro para Direita
-    else if (rxData=='2'){
-    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
-    }
-    // Move o carro para frente
-    else if (rxData=='1'){
-    	HAL_GPIO_WritePin(LED_G_PWM_GPIO_Port, LED_G_PWM_Pin, 0);
-    }
-
-    HAL_UART_Receive_IT(&huart3,&rxData,1); // Habilitando o recebimento de interrupção novamente
+    HAL_UART_Receive_IT(&huart3,&rxData,1);
   }
-}
+
 
 }
+
 /* USER CODE END 4 */
 
 /**
